@@ -3,6 +3,7 @@ using IdentityServer.Data.Dto;
 using IdentityServer.Data.Exceptions;
 using IdentityServer.Data.Interfaces.Repositories;
 using IdentityServer.Data.Models;
+using IdentityServer.Data.Services;
 using Microsoft.AspNetCore.Identity;
 
 namespace IdentityServer.Data.Repositories; 
@@ -12,9 +13,12 @@ internal class UserRepository : IUserRepository {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
 
-    public UserRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager) {
+    private readonly TokenFactory _tokenFactory;
+    
+    public UserRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, TokenFactory tokenFactory) {
         _userManager = userManager;
         _signInManager = signInManager;
+        _tokenFactory = tokenFactory;
     }
 
     public async Task<Result<string>> LoginUserAsync(string email, string password) {
@@ -33,7 +37,8 @@ internal class UserRepository : IUserRepository {
         }
         // Success
         var roles = await _userManager.GetRolesAsync(user);
-        
+        var claims = _tokenFactory.GetUserAuthClaims(user, roles);
+        return await _tokenFactory.GenerateJwtSecurityTokenAsync(claims);
     }
 
     public Task<Result<string>> RegisterUserAsync(RegisterModel registerModel) {

@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using IdentityServer.Data.Extensions;
 using IdentityServer.Data.Models;
 using Microsoft.Extensions.Configuration;
@@ -16,24 +17,29 @@ internal class TokenFactory {
         _config = config;
     }
 
-    public JwtSecurityToken GenerateJwtSecurityToken(List<Claim> claims) {
+    public async Task<string> GenerateJwtSecurityTokenAsync(List<Claim> claims) {
         claims.Add(new Claim (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
         claims.Add(new Claim(JwtRegisteredClaimNames.Iat, EpochTime.GetIntDate(DateTime.Now).ToString()));
         claims.Add(new Claim(JwtRegisteredClaimNames.Exp, EpochTime.GetIntDate(DateTime.Now.AddHours(12)).ToString()));
-        
-        // TODO: Sign with private RSA Key
-        //var authSigningKey = new SecurityKey;
 
-        return new JwtSecurityToken(
+        using var rsa = RSA.Create();
+        var keyXml = await File.ReadAllTextAsync(_config.GetJwtPrivateKeyPath());
+        rsa.FromXmlString(keyXml);
+
+        var signingKey = new SigningCredentials(new RsaSecurityKey(rsa), SecurityAlgorithms.RsaSha256);
+        
+        var jwt = new JwtSecurityToken(
             issuer: _config.GetJwtIssuer(),
             audience: _config.GetJwtAudience(),
             expires: DateTime.Now.AddHours(12),
             claims: claims,
-            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+            signingCredentials: signingKey
         );
+
+        return new JwtSecurityTokenHandler().WriteToken(jwt);
     }
     
-    public IEnumerable<Claim> GetUserAuthClaims(ApplicationUser user, IEnumerable<string> roles) {
+    public List<Claim> GetUserAuthClaims(ApplicationUser user, IEnumerable<string> roles) {
         var authClaims = new List<Claim> {
             new (ClaimTypes.NameIdentifier, user.Id),
         };
