@@ -51,6 +51,7 @@ public static class DependencyInjection {
     private static IServiceCollection AddDataRepositories(this IServiceCollection services) {
 
         services.AddTransient<IUserRepository, UserRepository>();
+        services.AddTransient<IUserImageRepository, UserImageRepository>();
 
         return services;
     }
