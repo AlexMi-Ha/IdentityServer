@@ -10,5 +10,7 @@ public interface IImageFile {
     
     void CopyTo (Stream target);
     Task CopyToAsync (Stream target, CancellationToken cancellationToken = default);
-    
+
+    Stream OpenReadStream();
+
 }
