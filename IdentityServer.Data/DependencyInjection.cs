@@ -1,6 +1,6 @@
-﻿using System.Text;
-using IdentityServer.Data.Extensions;
+﻿using IdentityServer.Data.Configuration;
 using IdentityServer.Data.Interfaces.Repositories;
+using IdentityServer.Data.Interfaces.Services;
 using IdentityServer.Data.Models;
 using IdentityServer.Data.Persistence;
 using IdentityServer.Data.Repositories;
@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Options;
 
 namespace IdentityServer.Data; 
 
@@ -24,6 +24,7 @@ public static class DependencyInjection {
 
         services.AddDataRepositories();
         services.AddIdentityServices();
+        services.AddAuthenticationServices();
         
         services.AddTransient<TokenFactory>();
         
@@ -61,22 +62,18 @@ public static class DependencyInjection {
         return services;
     }
     
-    private static IServiceCollection AddAuthenticationServices(this IServiceCollection services, IConfiguration configuration) {
+    private static IServiceCollection AddAuthenticationServices(this IServiceCollection services) {
+        services.AddSingleton<IJwtHandler, JwtHandler>();
+
         services.AddAuthentication(opt => {
             opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(o => {
-            o.TokenValidationParameters = new TokenValidationParameters {
-                ValidIssuer = configuration.GetJwtIssuer(),
-                ValidAudience = configuration.GetJwtAudience(),
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true
-            };
-        });
+        }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, null);
+
+        // Add Jwt configuration after initialization
+        services.AddSingleton<IConfigureOptions<JwtBearerOptions>, JwtOptionsConfiguration>();
+
         return services;
     }
     

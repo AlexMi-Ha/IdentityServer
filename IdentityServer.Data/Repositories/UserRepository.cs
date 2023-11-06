@@ -21,7 +21,7 @@ internal class UserRepository : IUserRepository {
         _tokenFactory = tokenFactory;
     }
 
-    public async Task<Result<string>> LoginUserAsync(string email, string password) {
+    public async Task<Result<JwtModel>> LoginUserAsync(string email, string password) {
         var user = await _userManager.FindByEmailAsync(email);
 
         if (user is null) {
@@ -38,10 +38,10 @@ internal class UserRepository : IUserRepository {
         // Success
         var roles = await _userManager.GetRolesAsync(user);
         var claims = _tokenFactory.GetUserAuthClaims(user, roles);
-        return await _tokenFactory.GenerateJwtSecurityTokenAsync(claims);
+        return _tokenFactory.GenerateJwtSecurityToken(claims);
     }
 
-    public Task<Result<string>> RegisterUserAsync(RegisterModel registerModel) {
+    public Task<Result<JwtModel>> RegisterUserAsync(RegisterModel registerModel) {
         throw new NotImplementedException();
     }
 
