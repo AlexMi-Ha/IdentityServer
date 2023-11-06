@@ -9,6 +9,6 @@ public interface IUserImageRepository {
 
     Task<Result<string>> SaveImageForUserAsync(string userId, IImageFile image);
 
-    Task<Result> DeleteImageForUserAsync(string userId);
+    Result DeleteImageForUser(string userId);
 
 }

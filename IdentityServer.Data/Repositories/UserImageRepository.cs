@@ -5,18 +5,18 @@ using IdentityServer.Data.Interfaces.Misc;
 using IdentityServer.Data.Interfaces.Repositories;
 using IdentityServer.Data.Services;
 using Microsoft.Extensions.Configuration;
-
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Jpeg;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityServer.Data.Repositories;
 
 internal class UserImageRepository : IUserImageRepository {
 
     private readonly IConfiguration _config;
+    private readonly ILogger<IUserImageRepository> _logger;
 
-    public UserImageRepository(IConfiguration config) {
+    public UserImageRepository(IConfiguration config, ILogger<IUserImageRepository> logger) {
         _config = config;
+        _logger = logger;
     }
 
     public string GetImagePathForUser(string userId) {
@@ -40,6 +40,9 @@ internal class UserImageRepository : IUserImageRepository {
         }
 
         if (!image.IsImage()) {
+            if (_logger.IsEnabled(LogLevel.Warning)) {
+                _logger.LogWarning("Found file that is not an image uploaded by {userId}", userId);
+            }
             return new ImageOperationException("Uploaded File must be an image!");
         }
 
@@ -64,17 +67,38 @@ internal class UserImageRepository : IUserImageRepository {
                 await imageModel.SaveAsJpegAsync(path);
                 return path;
             }
-            catch (Exception) {
+            catch (Exception ex) {
+                if (_logger.IsEnabled(LogLevel.Warning)) {
+                    _logger.LogWarning("Could not save an image\nProduced Exception:{ex}",ex);
+                }
                 return new ImageOperationException("Error while saving the image!");
             }
         }
-        catch (Exception) {
+        catch (Exception ex) {
+            if (_logger.IsEnabled(LogLevel.Warning)) {
+                _logger.LogWarning("Could not process an image\nProduced Exception:{ex}", ex);
+            }
             return new ImageOperationException("Error while processing the image!");
         }
 
     }
 
-    public Task<Result> DeleteImageForUserAsync(string userId) {
-        throw new NotImplementedException();
+    public Result DeleteImageForUser(string userId) {
+        var path = GetImagePathForUser(userId, false);
+        if (File.Exists(path)) {
+            try {
+                File.Delete(path);
+            }
+            catch (Exception ex) {
+                if (_logger.IsEnabled(LogLevel.Warning)) {
+                    _logger.LogWarning("Could not delete an image\nProduced Exception:{ex}",ex);
+                }
+
+                return false;
+            }
+            
+        }
+
+        return true;
     }
 }
