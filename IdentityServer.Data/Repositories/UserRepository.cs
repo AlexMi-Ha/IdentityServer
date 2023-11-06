@@ -30,9 +30,11 @@ internal class UserRepository : IUserRepository {
         var attempt = await _signInManager.CheckPasswordSignInAsync(user, password, true);
         if (attempt is null) {
             return new AuthFailureException("Authentication failed!");
-        }else if (attempt.IsLockedOut) {
+        }
+        if (attempt.IsLockedOut) {
             return new AuthFailureException("User is locked out!");
-        }else if (!attempt.Succeeded) {
+        }
+        if (!attempt.Succeeded) {
             return new AuthFailureException("Invalid Email or Password!");
         }
         // Success
