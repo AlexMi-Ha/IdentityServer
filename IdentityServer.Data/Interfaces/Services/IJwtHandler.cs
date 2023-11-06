@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using IdentityServer.Data.Models;
+using IdentityServer.Data.Dto;
 using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityServer.Data.Interfaces.Services; 

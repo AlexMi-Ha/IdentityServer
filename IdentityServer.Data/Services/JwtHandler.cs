@@ -1,9 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using IdentityServer.Data.Dto;
 using IdentityServer.Data.Extensions;
 using IdentityServer.Data.Interfaces.Services;
-using IdentityServer.Data.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 

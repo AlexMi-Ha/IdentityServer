@@ -1,10 +1,8 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using IdentityServer.Data.Extensions;
+﻿using System.Security.Claims;
+using IdentityServer.Data.Dto;
 using IdentityServer.Data.Interfaces.Services;
 using IdentityServer.Data.Models;
-using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace IdentityServer.Data.Services; 
 

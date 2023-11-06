@@ -1,4 +1,4 @@
-﻿namespace IdentityServer.Data.Models; 
+﻿namespace IdentityServer.Data.Dto; 
 
 public class JwtModel {
     
