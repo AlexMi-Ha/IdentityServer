@@ -28,9 +28,6 @@ internal class UserRepository : IUserRepository {
             return new AuthFailureException("Invalid Email or Password!");
         }
         var attempt = await _signInManager.CheckPasswordSignInAsync(user, password, true);
-        if (attempt is null) {
-            return new AuthFailureException("Authentication failed!");
-        }
         if (attempt.IsLockedOut) {
             return new AuthFailureException("User is locked out!");
         }
@@ -43,11 +40,41 @@ internal class UserRepository : IUserRepository {
         return _tokenFactory.GenerateJwtSecurityToken(claims);
     }
 
-    public Task<Result<JwtModel>> RegisterUserAsync(RegisterModel registerModel) {
-        throw new NotImplementedException();
+    public async Task<Result<JwtModel>> RegisterUserAsync(RegisterModel registerModel) {
+        var user = await _userManager.FindByEmailAsync(registerModel.Email);
+        if (user is not null) {
+            return new UserOperationException("User already exists!");
+        }
+
+        user = CreateBaseUserModel(registerModel.Email, registerModel.Name);
+
+        var result = await _userManager.CreateAsync(user, registerModel.Password);
+        if (!result.Succeeded) {
+            return new UserOperationException("Failed to create account");
+        }
+
+        return await LoginUserAsync(registerModel.Email, registerModel.Password);
     }
 
-    public Task<Result> DeleteUserAsync(string userId) {
-        throw new NotImplementedException();
+    public async Task<Result> DeleteUserAsync(string userId) {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null) {
+            return new UserOperationException("User does not exist");
+        }
+
+        var result = await _userManager.DeleteAsync(user);
+        return result.Succeeded ? true : new UserOperationException("Failed deleting the user");
+    }
+
+    private ApplicationUser CreateBaseUserModel(string email, string? name) {
+        return new ApplicationUser() {
+            Email = email,
+            UserName = name,
+            EmailConfirmed = false,
+            LockoutEnabled = true,
+            SecurityStamp = Guid.NewGuid().ToString(),
+            PhoneNumberConfirmed = false,
+            TwoFactorEnabled = false
+        };
     }
 }
