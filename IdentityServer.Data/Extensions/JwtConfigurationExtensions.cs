@@ -2,7 +2,7 @@
 
 namespace IdentityServer.Data.Extensions; 
 
-public static class JwtConfigurationExtensions {
+internal static class JwtConfigurationExtensions {
 
     public static string GetJwtPrivateKeyPath(this IConfiguration config) {
         return Path.Combine(GetJwtKeyPath(config), "priv.key");

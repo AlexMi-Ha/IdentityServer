@@ -2,7 +2,7 @@
 
 namespace IdentityServer.Data.Extensions; 
 
-public static class ImagesConfigurationExtensions {
+internal static class ImagesConfigurationExtensions {
 
     public static string GetImagesPath(this IConfiguration config) {
         return config["ImagePath"]!;

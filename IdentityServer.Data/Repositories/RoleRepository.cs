@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer.Data.Repositories; 
 
-public class RoleRepository : IRoleRepository {
+internal class RoleRepository : IRoleRepository {
 
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly UserManager<ApplicationUser> _userManager;

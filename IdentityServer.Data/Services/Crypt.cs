@@ -3,7 +3,7 @@ using System.Text;
 
 namespace IdentityServer.Data.Services;
 
-public static class Crypt {
+internal static class Crypt {
 
     public static string ComputePathSafeString(string plaintext) {
         var bytes = HashMd5(plaintext);
