@@ -52,6 +52,7 @@ public static class DependencyInjection {
 
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<IUserImageRepository, UserImageRepository>();
+        services.AddTransient<IRoleRepository, RoleRepository>();
 
         return services;
     }
