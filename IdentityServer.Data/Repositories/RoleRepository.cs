@@ -1,4 +1,5 @@
-﻿using IdentityServer.Core.Abstractions;
+﻿using System.Xml;
+using IdentityServer.Core.Abstractions;
 using IdentityServer.Core.Dto;
 using IdentityServer.Core.Exceptions;
 using IdentityServer.Core.Interfaces.Repositories;
@@ -10,21 +11,22 @@ namespace IdentityServer.Data.Repositories;
 
 internal class RoleRepository : IRoleRepository {
 
-    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly UserManager<ApplicationUser> _userManager;
     
-    public RoleRepository(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager) {
+    public RoleRepository(RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager) {
         _roleManager = roleManager;
         _userManager = userManager;
     }
 
     public async Task<Result<IEnumerable<RoleModel>>> GetAllRolesAsync() {
         return await _roleManager.Roles
-            .Select(e => new RoleModel {
-                RoleId = e.Id,
-                RoleName = e.Name ?? "<roleName>"
-            })
-            .ToListAsync();
+            .Select(e => new RoleModel() {
+                    RoleId = e.Id,
+                    RoleName = e.Name!,
+                    RoleDescription = e.RoleDescription,
+                }
+            ).ToListAsync();
     }
 
     public async Task<Result<IEnumerable<UserModel>>> GetAllUsersInRoleAsync(string roleName) {
@@ -41,15 +43,15 @@ internal class RoleRepository : IRoleRepository {
         }));
     }
 
-    public async Task<Result<RoleModel>> AddNewRoleAsync(string name) {
-        if (await _roleManager.RoleExistsAsync(name)) {
+    public async Task<Result<RoleModel>> AddNewRoleAsync(RoleModel model) {
+        if (await _roleManager.RoleExistsAsync(model.RoleName)) {
             return new UserOperationException("Role does already exist");
         }
 
-        var role = new IdentityRole(name);
+        var role = new ApplicationRole(model.RoleName, model.RoleDescription);
         var result = await _roleManager.CreateAsync(role);
         return result.Succeeded
-            ? new RoleModel { RoleId = role.Id, RoleName = role.Name }
+            ? model
             : new UserOperationException("Failed creating the role");
     }
 

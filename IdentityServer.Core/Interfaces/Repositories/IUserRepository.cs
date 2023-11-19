@@ -7,7 +7,7 @@ public interface IUserRepository {
 
     
     
-    Task<Result<JwtModel>> LoginUserAsync(string email, string password);
+    Task<Result<JwtModel>> LoginUserAsync(LoginModel model);
     Task<Result<JwtModel>> RegisterUserAsync(RegisterModel registerModel);
 
     Task<Result> DeleteUserAsync(string userId);

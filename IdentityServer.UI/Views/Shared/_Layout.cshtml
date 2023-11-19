@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="light">
+    <head>
+        <title>@ViewData["Title"]</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="~/css/common/site.css" />
+        <link rel="stylesheet" href="~/css/common/input.css" />
+        <link rel="stylesheet" href="~/css/common/icons.css" />
+        @await RenderSectionAsync("Styles", false)
+        <script src="~/js/common/cookie.js"></script>
+        <script src="~/js/common/theme.js"></script>
+        <script src="~/js/common/input.js"></script>
+        @await RenderSectionAsync("Scripts", false)
+    </head>
+    <body>
+        <nav>
+            <button id="theme-switcher" aria-label="switch theme"><span class="ti ti-light-darkmode"></span></button>
+        </nav>
+        <div class="wrapper">
+            @RenderBody()
+        </div>
+    </body>
+</html>

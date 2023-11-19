@@ -1,0 +1,115 @@
+﻿@model IdentityServer.Core.Dto.UserModel
+@{
+    ViewData["Title"] = "Profile";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/profile.css" />
+}
+
+<div class="content-panel">
+    <div class="account-panel">
+        <div class="top-panel">
+            <div class="profile-picture-container">
+                <img src="/usercontent/@Model.UserId" class="round" alt="Profile Picture">
+                <input type="file" id="profile-picture-upload" hidden>
+                <label class="picture-switcher" for="profile-picture-upload"><span class="ti ti-pencil"></span></label>
+            </div>
+            <p class="username">@Model.UserName</p>
+            <p class="email low-opacity">@Model.Email</p>
+        </div>
+        <button class="button button-primary">Log out</button>
+    </div>
+    <div class="settings-panel">
+        <h1>Account</h1>
+        <section class="account-settings panel-action-grid">
+            <div class="input-container input-2-col input-width-300">
+                <span class="ti ti-user"></span>
+                <input placeholder="Name" value="@Model.UserName" required/>
+            </div>
+            <button class="button button-width-200" id="change-name-button">Change Name</button>
+            <p>Confirming your email address can greatly enhance your security by opening the possibility for two factor authentication and important mail updates</p>
+            @if (Model.EmailConfirmed) {
+                <p class="mail-confirmed">Email Confirmed <span class="ti ti-check active"></span></p>
+            }
+            else {
+                <button class="button button-width-200">Confirm Email</button>
+            }
+            <p>If you do not use/want your account anymore you can simple delete it. All user data will be deleted.</p>
+            <button class="button button-primary button-width-200">Delete Account</button>
+        </section>
+        <hr>
+        <h1>Security</h1>
+        <section class="security-settings panel-action-grid">
+            <p>Two Factor Authentication (2FA) is a way to further secure your account. Whenever you want to login, you will receive a message in your email inbox containing the pin you need to login.</p>
+            @if (Model.MFAEnabled) {
+                <button class="button button-width-200">Disable 2FA</button>
+            }else {
+                <button class="button button-width-200">Enable 2FA</button>
+            }
+            
+        </section>
+        <hr>
+        <h1>Password</h1>
+        <section class="panel-list">
+            <p>Make sure to change your password once in a while to make sure compromised passwords cannot do much harm.</p>
+            <form class="validated-form" id="change-password-form">
+                <label for="old-password-input">Old Password</label>
+                <div class="input-container input-3-col">
+                    <span class="ti ti-key"></span>
+                    <input placeholder="Old Password" type="password" id="old-password-input" required tabindex="1"/>
+                    <button type="button" class="password-toggle"><span class="ti ti-password-eye-toggle"></span></button>
+                </div>
+                <label for="new-password-input">New Password</label>
+                <div class="validated-input-container">
+                    <div class="input-container input-3-col">
+                        <span class="ti ti-key"></span>
+                        <input placeholder="New Password" type="password" data-input="password" id="new-password-input" required tabindex="2"/>
+                        <button type="button" class="password-toggle"><span class="ti ti-password-eye-toggle"></span></button>
+                    </div>
+                    <p class="validation-text">Invalid New Password!</p>
+                </div>
+                <label for="new-password-repeat-input">Repeat New Password</label>
+                <div class="validated-input-container">
+                    <div class="input-container input-3-col">
+                        <span class="ti ti-key"></span>
+                        <input placeholder="Repeat New Password" type="password" data-input="password-repeat" data-for="new-password-input" id="new-password-repeat-input" required tabindex="3"/>
+                        <button type="button" class="password-toggle"><span class="ti ti-password-eye-toggle"></span></button>
+                    </div>
+                    <p class="validation-text">Your passwords do not match! Please try again!</p>
+                </div>
+                <button type="submit" class="button button-primary" id="change-password-button">Change Password</button>
+            </form>
+        </section>
+        <hr>
+        <h1>Roles</h1>
+        <section class="role-settings">
+            @foreach (var role in Model.Roles) {
+                <div class="role-container">
+                    <span class="ti ti-dropdown-toggle"></span>
+                    @* <div> *@
+                        <p class="role-name">@role.RoleName</p>
+                        @* <div class="role-info low-opacity"> *@
+                        @*     <span>Granted<br></span> *@
+                        @*     <span>Expires<br>/</span> *@
+                        @* </div> *@
+                    @* </div> *@
+                    <div class="role-description">
+                        <p>@role.RoleDescription</p>
+                    </div>
+                </div>
+            }
+        </section>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.role-container').forEach(ele => {
+        ele.addEventListener('click', () => {
+            if(ele.classList.contains('active')) {
+                ele.classList.remove('active');
+            }else {
+                ele.classList.add('active');
+            }
+        })
+    });
+</script>

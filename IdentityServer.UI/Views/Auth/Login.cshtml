@@ -1,0 +1,32 @@
+﻿@model IdentityServer.Core.Dto.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/login.css" />
+}
+
+<div class="action-card">
+    <form class="login-panel" method="post" asp-controller="Auth" asp-action="LoginAction">
+        <div>
+            <div class="login-panel-text">
+                <h1>Log in to your account</h1>
+                <p class="low-opacity">Welcome back!</p>
+            </div>
+            <div class="input-container input-2-col">
+                <span class="ti ti-mail"></span>
+                <input placeholder="Email" asp-for="Email" required/>
+            </div>
+            <div class="input-container input-3-col">
+                <span class="ti ti-key"></span>
+                <input placeholder="Password" type="password" asp-for="Password" required/>
+                <button type="button" class="password-toggle"><span class="ti ti-password-eye-toggle"></span></button>
+            </div>
+        </div>
+        <div>
+            <button class="button round button-primary" type="submit">Log in</button>
+            <p class="login-navigation">Don't have an account? <a asp-controller="Auth" asp-action="Register">Create an account</a></p>
+        </div>
+    </form>
+    <div class="decoration-panel"></div>
+</div>

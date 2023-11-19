@@ -1,0 +1,95 @@
+﻿@font-face {
+    font-family: "tabler-icons";
+    font-style: normal;
+    font-weight: 400;
+    src: url(../../fonts/tablerIcons.eot);
+    src: url(../../fonts/tablerIcons-1.eot) format("embedded-opentype"),url("../../fonts/tablerIcons.woff2") format("woff2"),url("../../fonts/tablerIcons.woff") format("woff"),url("../../fonts/tablerIcons.ttf") format("truetype")
+}
+
+.ti {
+    font-family: "tabler-icons" !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.ti-mail::before {
+    content: "\eae5";
+}
+
+.ti-search:before {
+    content: "\eb1c"
+}
+
+.ti-key::before {
+    content: "\eac7";
+}
+
+.ti-pencil::before {
+    content: "\eb04";
+}
+
+.ti-user::before {
+    content: "\eb4d";
+}
+
+.ti-eye::before {
+    content: "\ea9a";
+}
+
+.ti-lock::before {
+    content: "\eae2";
+}
+
+.ti-light-darkmode::before {
+    content: "\eb30";
+}
+.dark .ti-light-darkmode::before {
+    content: "\eaf8";
+}
+
+.ti-password-eye-toggle::before {
+    content: "\ecf0";
+}
+
+.open .ti-password-eye-toggle::before {
+    content: "\ea9a";
+}
+
+.ti-dropdown-toggle::before {
+    font-size: 24px;
+    content: "\ea5f";
+}
+.active .ti-dropdown-toggle::before {
+    content: "\ea62";
+}
+
+.ti-shield::before {
+    content: "\ecf8";
+}
+.ti-shield.active::before {
+    content: "\f69f";
+}
+
+.ti-check::before {
+    content: "\ea6a";
+    color: var(--primary);
+}
+
+.ti-check.active::before {
+    content: "\ea67";
+    color: var(--green);
+}
+
+.ti-lock::before {
+    content: "\eae2";
+}
+
+.ti-x:before {
+    content: "\eb55"
+}

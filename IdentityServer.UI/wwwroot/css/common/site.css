@@ -1,0 +1,104 @@
+﻿* {
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+@font-face {
+    font-family: "JetBrainsMono Nerd Font";
+    src: local(JetBrains Mono Bold Nerd Font Complete), url("../../fonts/JetbrainsBold.woff2") format("woff2"), url("../../fonts/JetbrainsBold.ttf") format("truetype");
+    font-stretch: normal;
+    font-style: normal;
+    font-display: swap;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "JetBrainsMono Nerd Font";
+    src: local(JetBrains Mono Regular Nerd Font Complete), url("../../fonts/JetbrainsRegular.woff2") format("woff2"), url("../../fonts/JetbrainsRegular.ttf") format("truetype");
+    font-stretch: normal;
+    font-style: normal;
+    font-display: swap;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local(Roboto-Regular), url("../../fonts/Roboto-Regular.ttf") format("truetype");
+}
+
+:root[data-theme="light"] {
+    --text: #1c1212;
+    --background: #ededed;
+    --secondary: #e2e2df;
+    --static1: rgba(0,0,0,0.1);
+}
+:root[data-theme="dark"] {
+    --text: #ede3e3;
+    --background: #101010;
+    --secondary: #20201d;
+    --static1: rgba(0,0,0,0.4);
+}
+:root {
+    --primary: #ac4d4d;
+    --accent: #4494e4;
+    --static11: rgba(255,255,255,0.03);
+    --white: #fff;
+    --green: #71de74;
+
+    --font-size--small: 14px;
+    --font-size--default: 16px;
+    --font-size--large: 24px;
+    --font-size--large-heading: 32px;
+    --font-size--large-heading-plus: 40px;
+}
+
+body {
+    margin: 0;
+    color: var(--text);
+    font-family: 'Roboto';
+    background-color: var(--secondary);
+}
+
+h1 {
+    font-size: var(--font-size--large-heading);
+}
+p {
+    font-size: var(--font-size--default);
+}
+input, button {
+    font-size: var(--font-size--small);
+}
+hr {
+    color: var(--text);
+    opacity: .1;
+}
+
+nav {
+    position: absolute;
+    top: 0;
+    background: none;
+    right: 0;
+}
+
+nav #theme-switcher {
+    background:none;
+    outline: none;
+    border:none;
+    color: var(--text);
+    font-size: x-large;
+    cursor: pointer;
+}
+
+.wrapper {
+    height: 100vh;
+    background-color: var(--secondary);
+    display: grid;
+    place-items: center;
+}
+
+.low-opacity {
+    opacity: .6;
+}

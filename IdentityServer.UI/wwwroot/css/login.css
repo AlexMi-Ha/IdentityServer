@@ -1,0 +1,91 @@
+﻿.action-card {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    background-color: var(--background);
+    border-radius: 30px;
+    height: 100%;
+    max-width: 900px;
+    max-height: 70vh;
+    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.35);
+    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.35);
+}
+
+.login-panel {
+    display:flex;
+    flex-direction: column;
+    padding: 1em 5em;
+    justify-content: space-evenly;
+}
+
+.login-panel-text h1 {
+    margin-bottom: 0;
+}
+
+.login-panel-text p {
+    margin-top: 0;
+}
+
+.login-panel-text {
+    margin-bottom: 3em;
+}
+
+
+.decoration-panel {
+    background-color: var(--accent);
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+
+
+.login-navigation a, .login-navigation a:visited {
+    color: var(--accent);
+}
+
+@media screen and (max-width: 1000px) {
+    .action-card {
+        display:flex;
+    }
+
+    .decoration-panel {
+        display:none;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .action-card {
+        width: 100%;
+        height: 100%;
+        max-height: 100vh;
+        border: none;
+        border-radius: 0;
+    }
+    .login-panel {
+        padding: 1em;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+    }
+}
+
+
+@media screen and (min-width: 500px) and (max-height: 760px) {
+    .action-card {
+        max-height: 90vh;
+    }
+}
+@media screen and (min-width: 500px) and (max-height: 590px) {
+
+    .action-card {
+        max-height: none;
+        border: none;
+        border-radius: 0;
+    }
+
+    .login-panel-text {
+        margin-bottom: 0;
+    }
+
+    .decoration-panel {
+        border-radius: 0;
+    }
+}

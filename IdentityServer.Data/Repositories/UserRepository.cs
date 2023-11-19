@@ -21,13 +21,13 @@ internal class UserRepository : IUserRepository {
         _tokenFactory = tokenFactory;
     }
 
-    public async Task<Result<JwtModel>> LoginUserAsync(string email, string password) {
-        var user = await _userManager.FindByEmailAsync(email);
+    public async Task<Result<JwtModel>> LoginUserAsync(LoginModel model) {
+        var user = await _userManager.FindByEmailAsync(model.Email);
 
         if (user is null) {
             return new AuthFailureException("Invalid Email or Password!");
         }
-        var attempt = await _signInManager.CheckPasswordSignInAsync(user, password, true);
+        var attempt = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
         if (attempt.IsLockedOut) {
             return new AuthFailureException("User is locked out!");
         }
@@ -53,7 +53,7 @@ internal class UserRepository : IUserRepository {
             return new UserOperationException("Failed to create account");
         }
 
-        return await LoginUserAsync(registerModel.Email, registerModel.Password);
+        return await LoginUserAsync(new LoginModel{Email = registerModel.Email,Password = registerModel.Password});
     }
 
     public async Task<Result> DeleteUserAsync(string userId) {

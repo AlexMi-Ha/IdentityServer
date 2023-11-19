@@ -9,4 +9,6 @@ public class UserModel {
     public bool MFAEnabled { get; set; }
     public bool EmailConfirmed { get; set; }
     public bool LockedOut { get; set; }
+    
+    public RoleModel[] Roles { get; set; }
 }

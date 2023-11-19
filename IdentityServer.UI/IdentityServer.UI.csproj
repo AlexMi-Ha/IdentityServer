@@ -11,4 +11,8 @@
       <ProjectReference Include="..\IdentityServer.Data\IdentityServer.Data.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\fonts\" />
+    </ItemGroup>
+
 </Project>

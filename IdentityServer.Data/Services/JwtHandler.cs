@@ -55,8 +55,9 @@ internal class JwtHandler : IJwtHandler {
     }
 
     public JwtModel Create(List<Claim> userClaims) {
+        var expiresDateTime = DateTimeOffset.Now.AddHours(12);
         long issuedAt = EpochTime.GetIntDate(DateTime.Now);
-        long expires = EpochTime.GetIntDate(DateTime.Now.AddHours(12));
+        long expires = EpochTime.GetIntDate(expiresDateTime.DateTime);
         userClaims.Add(new Claim (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
         userClaims.Add(new Claim(JwtRegisteredClaimNames.Iat, issuedAt.ToString()));
         userClaims.Add(new Claim(JwtRegisteredClaimNames.Exp, expires.ToString()));
@@ -72,7 +73,8 @@ internal class JwtHandler : IJwtHandler {
 
         return new JwtModel {
             Token = token,
-            Expires = expires
+            ExpiresEpoch = expires,
+            ExpiresDateTimeOffset = expiresDateTime
         };
     }
 

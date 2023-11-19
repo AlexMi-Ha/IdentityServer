@@ -1,0 +1,49 @@
+﻿@model IdentityServer.Core.Dto.RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/login.css" />
+}
+
+<div class="action-card">
+    <form class="login-panel validated-form">
+        <div>
+            <div class="login-panel-text">
+                <h1>Register an new account</h1>
+                <p class="low-opacity">Welcome!</p>
+            </div>
+            <div class="validated-input-container">
+                <div class="input-container input-2-col">
+                    <span class="ti ti-mail"></span>
+                    <input placeholder="Email *" type="email" id="email-input" asp-for="Email" required tabindex="1"/>
+                </div>
+            </div>
+            <div class="input-container input-2-col">
+                <span class="ti ti-user"></span>
+                <input placeholder="Name *" asp-for="Name" tabindex="2" required/>
+            </div>
+            <div class="validated-input-container">
+                <div class="input-container input-3-col">
+                    <span class="ti ti-key"></span>
+                    <input placeholder="Password *" type="password" asp-for="Password" data-input="password" id="password-input" required tabindex="3"/>
+                    <button type="button" class="password-toggle"><span class="ti ti-password-eye-toggle"></span></button>
+                </div>
+                <p class="validation-text">Invalid Password!</p>
+            </div>
+            <div class="validated-input-container">
+                <div class="input-container input-3-col">
+                    <span class="ti ti-key"></span>
+                    <input placeholder="Repeat Password *" type="password" data-input="password-repeat" data-for="password-input" id="password-repeat-input" required tabindex="4"/>
+                    <button type="button" class="password-toggle"><span class="ti ti-password-eye-toggle"></span></button>
+                </div>
+                <p class="validation-text">Your passwords do not match! Please try again!</p>
+            </div>
+        </div>
+        <div>
+            <button class="button round button-primary" type="submit" tabindex="5">Register</button>
+            <p class="login-navigation">Already have an account? <a asp-controller="Auth" asp-action="Login">Log in</a></p>
+        </div>
+    </form>
+    <div class="decoration-panel"></div>
+</div>
