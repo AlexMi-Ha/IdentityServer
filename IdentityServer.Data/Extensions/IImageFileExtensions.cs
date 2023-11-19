@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using IdentityServer.Data.Interfaces.Misc;
+using IdentityServer.Core.Interfaces.Misc;
 
 namespace IdentityServer.Data.Extensions; 
 

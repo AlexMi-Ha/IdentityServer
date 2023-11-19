@@ -1,6 +1,6 @@
-﻿using IdentityServer.Data.Configuration;
-using IdentityServer.Data.Interfaces.Repositories;
-using IdentityServer.Data.Interfaces.Services;
+﻿using IdentityServer.Core.Interfaces.Repositories;
+using IdentityServer.Core.Interfaces.Services;
+using IdentityServer.Data.Configuration;
 using IdentityServer.Data.Models;
 using IdentityServer.Data.Persistence;
 using IdentityServer.Data.Repositories;

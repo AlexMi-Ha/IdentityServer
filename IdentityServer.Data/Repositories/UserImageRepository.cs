@@ -1,9 +1,9 @@
-﻿using IdentityServer.Data.Abstractions;
-using IdentityServer.Data.Exceptions;
+﻿using IdentityServer.Core.Abstractions;
+using IdentityServer.Core.Exceptions;
+using IdentityServer.Core.Interfaces.Misc;
+using IdentityServer.Core.Interfaces.Repositories;
+using IdentityServer.Core.Services;
 using IdentityServer.Data.Extensions;
-using IdentityServer.Data.Interfaces.Misc;
-using IdentityServer.Data.Interfaces.Repositories;
-using IdentityServer.Data.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 

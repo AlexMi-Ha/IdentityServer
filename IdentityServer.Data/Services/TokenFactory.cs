@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
-using IdentityServer.Data.Dto;
-using IdentityServer.Data.Interfaces.Services;
+using IdentityServer.Core.Dto;
+using IdentityServer.Core.Interfaces.Services;
 using IdentityServer.Data.Models;
 using Microsoft.IdentityModel.JsonWebTokens;
 

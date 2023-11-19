@@ -1,7 +1,7 @@
-﻿using IdentityServer.Data.Abstractions;
-using IdentityServer.Data.Dto;
-using IdentityServer.Data.Exceptions;
-using IdentityServer.Data.Interfaces.Repositories;
+﻿using IdentityServer.Core.Abstractions;
+using IdentityServer.Core.Dto;
+using IdentityServer.Core.Exceptions;
+using IdentityServer.Core.Interfaces.Repositories;
 using IdentityServer.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

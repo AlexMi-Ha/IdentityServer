@@ -1,4 +1,4 @@
-﻿using IdentityServer.Data.Interfaces.Services;
+﻿using IdentityServer.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 
