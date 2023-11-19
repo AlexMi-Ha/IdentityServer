@@ -38,6 +38,9 @@ form .input-container {
     border:none;
     cursor: pointer;
     font-size: var(--font-size--small);
+    text-align: center;
+    vertical-align: center;
+    line-height: 2.5em;
 }
 
 form .button {

@@ -17,7 +17,7 @@
             <p class="username">@Model.UserName</p>
             <p class="email low-opacity">@Model.Email</p>
         </div>
-        <button class="button button-primary">Log out</button>
+        <a asp-controller="Auth" asp-action="Logout" class="button button-primary">Log out</a>
     </div>
     <div class="settings-panel">
         <h1>Account</h1>

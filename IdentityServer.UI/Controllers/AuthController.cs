@@ -10,13 +10,25 @@ namespace IdentityServer.UI.Controllers;
 public class AuthController(IUserRepository userRepo, IConfiguration configuration) : Controller {
     
     [HttpGet("login")]
-    public IActionResult Login() {
+    public IActionResult Login([FromQuery]string? returnUrl) {
+        ViewData["ReturnUrl"] = returnUrl;
         return View();
     }
 
     [HttpGet("register")]
-    public IActionResult Register() {
+    public IActionResult Register([FromQuery]string? returnUrl) {
+        ViewData["ReturnUrl"] = returnUrl;
         return View();
+    }
+
+    [HttpGet("logout")]
+    public IActionResult Logout([FromQuery]string? returnUrl) {
+        HttpContext.Response.Cookies.Delete("identity-token");
+        if (string.IsNullOrWhiteSpace(returnUrl)) {
+            return RedirectToAction(nameof(Login));
+        }
+
+        return RedirectToRoute(returnUrl);
     }
 
     [HttpPost("loginaction")]
@@ -26,7 +38,7 @@ public class AuthController(IUserRepository userRepo, IConfiguration configurati
             succ => {
                 SetupAuthCookie(succ);
                 if (string.IsNullOrWhiteSpace(returnUrl)) {
-                    return RedirectToAction("Profile", "User");
+                    return RedirectToAction("Index", "User");
                 }
                 return RedirectToRoute(returnUrl);
             },
@@ -48,7 +60,7 @@ public class AuthController(IUserRepository userRepo, IConfiguration configurati
             succ => {
                 SetupAuthCookie(succ);
                 if (string.IsNullOrWhiteSpace(returnUrl)) {
-                    return RedirectToAction("Profile", "User");
+                    return RedirectToAction("Index", "User");
                 }
                 return RedirectToRoute(returnUrl);
             },
@@ -65,7 +77,7 @@ public class AuthController(IUserRepository userRepo, IConfiguration configurati
 
     private void SetupAuthCookie(JwtModel jwt) {
         HttpContext.Response.Cookies.Append(
-            "token",
+            "identity-token",
             jwt.Token, 
                 new CookieOptions(){
                     Domain = configuration.GetCookieDomain(),

@@ -8,6 +8,9 @@
 
 <div class="action-card">
     <form class="login-panel" method="post" asp-controller="Auth" asp-action="LoginAction">
+        @if (ViewData["ReturnUrl"] != null) {
+            <input type="hidden" value="@ViewData["ReturnUrl"]" name="returnUrl"/>
+        }
         <div>
             <div class="login-panel-text">
                 <h1>Log in to your account</h1>
@@ -25,7 +28,7 @@
         </div>
         <div>
             <button class="button round button-primary" type="submit">Log in</button>
-            <p class="login-navigation">Don't have an account? <a asp-controller="Auth" asp-action="Register">Create an account</a></p>
+            <p class="login-navigation">Don't have an account? <a asp-controller="Auth" asp-action="Register" asp-route-returnUrl="@ViewData["ReturnUrl"]">Create an account</a></p>
         </div>
     </form>
     <div class="decoration-panel"></div>

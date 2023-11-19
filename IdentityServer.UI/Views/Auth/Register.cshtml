@@ -8,6 +8,9 @@
 
 <div class="action-card">
     <form class="login-panel validated-form">
+        @if (ViewData["ReturnUrl"] != null) {
+            <input type="hidden" value="@ViewData["ReturnUrl"]" name="returnUrl"/>
+        }
         <div>
             <div class="login-panel-text">
                 <h1>Register an new account</h1>
@@ -42,7 +45,7 @@
         </div>
         <div>
             <button class="button round button-primary" type="submit" tabindex="5">Register</button>
-            <p class="login-navigation">Already have an account? <a asp-controller="Auth" asp-action="Login">Log in</a></p>
+            <p class="login-navigation">Already have an account? <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]">Log in</a></p>
         </div>
     </form>
     <div class="decoration-panel"></div>
