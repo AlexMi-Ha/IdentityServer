@@ -2,13 +2,14 @@
 using IdentityServer.Core.Dto;
 using IdentityServer.Core.Exceptions;
 using IdentityServer.Core.Interfaces.Repositories;
+using IdentityServer.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityServer.UI.Controllers; 
 
 // TODO: Authorize
 [Route("user")]
-public class UserController(IUserRepository userRepo) : Controller {
+public class UserController(IUserRepository userRepo, IUserOperationService userOpService) : Controller {
     
     public IActionResult Index() {
         var user = GetDefaultUser();
@@ -17,29 +18,27 @@ public class UserController(IUserRepository userRepo) : Controller {
 
     [HttpGet("api/isNameAvailable")]
     public async Task<bool> IsNameAvailable([FromQuery]string name) {
-        return await userRepo.IsNameAvailableAsync(name);
+        return await userOpService.IsNameAvailableAsync(name);
     }
 
     [HttpPost("api/changeName")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ChangeName([FromBody]string name) {
-        var available = await userRepo.IsNameAvailableAsync(name);
+        var available = await userOpService.IsNameAvailableAsync(name);
         if (!available) {
             return UnprocessableEntity("Name is not available");
         }
 
-        var res = await userRepo.ChangeNameAsync(GetUserId(), name);
+        var res = await userOpService.ChangeNameAsync(new ChangeNameModel(GetUserId(), name));
         return res.Match<IActionResult>(
             Ok,
             err => {
-                if (err is UserNotFoundException) {
-                    return NotFound("User not found");
-                }
-                if (err is UserOperationException) {
-                    return UnprocessableEntity();
-                }
-
-                return StatusCode(500);
+                return err switch {
+                    ValidationException => UnprocessableEntity(err.Message),
+                    UserNotFoundException => NotFound("User not found"),
+                    UserOperationException => UnprocessableEntity(),
+                    _ => StatusCode(500)
+                };
             }
         );
     }

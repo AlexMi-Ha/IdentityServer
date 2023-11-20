@@ -43,10 +43,11 @@ public class AuthController(IUserRepository userRepo, IConfiguration configurati
                 return RedirectToRoute(returnUrl);
             },
             err => {
-                if (err is AuthFailureException afx) {
-                    return Unauthorized(afx.Message);
-                }
-                return StatusCode(500);
+                return err switch {
+                    ValidationException => UnprocessableEntity(err.Message),
+                    AuthFailureException => Unauthorized(err.Message),
+                    _ => StatusCode(500)
+                };
             }
         );
     }
@@ -65,12 +66,12 @@ public class AuthController(IUserRepository userRepo, IConfiguration configurati
                 return RedirectToRoute(returnUrl);
             },
             err => {
-                if (err is AuthFailureException afx) {
-                    return Unauthorized(afx.Message);
-                }else if (err is UserOperationException uoe) {
-                    return UnprocessableEntity(uoe.Message);
-                }
-                return StatusCode(500);
+                return err switch {
+                    ValidationException => UnprocessableEntity(err.Message),
+                    UserOperationException => UnprocessableEntity(err.Message),
+                    AuthFailureException => Unauthorized(err.Message),
+                    _ => StatusCode(500)
+                };
             }
         );
     }
