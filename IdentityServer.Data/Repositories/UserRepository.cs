@@ -59,11 +59,27 @@ internal class UserRepository : IUserRepository {
     public async Task<Result> DeleteUserAsync(string userId) {
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null) {
-            return new UserOperationException("User does not exist");
+            return new UserNotFoundException("User does not exist");
         }
 
         var result = await _userManager.DeleteAsync(user);
         return result.Succeeded ? true : new UserOperationException("Failed deleting the user");
+    }
+
+    public async Task<bool> IsNameAvailableAsync(string name) {
+        var user = await _userManager.FindByNameAsync(name);
+        return user is null;
+    }
+
+    public async Task<Result> ChangeNameAsync(string userId, string newName) {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null) {
+            return new UserNotFoundException();
+        }
+
+        user.UserName = newName;
+        var res = await _userManager.UpdateAsync(user);
+        return res.Succeeded ? true : new UserOperationException();
     }
 
     private ApplicationUser CreateBaseUserModel(string email, string? name) {

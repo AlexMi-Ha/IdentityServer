@@ -1,14 +1,51 @@
-﻿using IdentityServer.Core.Dto;
+﻿using System.Security.Claims;
+using IdentityServer.Core.Dto;
+using IdentityServer.Core.Exceptions;
+using IdentityServer.Core.Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityServer.UI.Controllers; 
 
+// TODO: Authorize
 [Route("user")]
-public class UserController : Controller {
+public class UserController(IUserRepository userRepo) : Controller {
     
     public IActionResult Index() {
         var user = GetDefaultUser();
         return View(user);
+    }
+
+    [HttpGet("api/isNameAvailable")]
+    public async Task<bool> IsNameAvailable([FromQuery]string name) {
+        return await userRepo.IsNameAvailableAsync(name);
+    }
+
+    [HttpPost("api/changeName")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangeName([FromBody]string name) {
+        var available = await userRepo.IsNameAvailableAsync(name);
+        if (!available) {
+            return UnprocessableEntity("Name is not available");
+        }
+
+        var res = await userRepo.ChangeNameAsync(GetUserId(), name);
+        return res.Match<IActionResult>(
+            Ok,
+            err => {
+                if (err is UserNotFoundException) {
+                    return NotFound("User not found");
+                }
+                if (err is UserOperationException) {
+                    return UnprocessableEntity();
+                }
+
+                return StatusCode(500);
+            }
+        );
+    }
+
+    private string GetUserId() {
+        return HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedException();
     }
 
     private UserModel GetDefaultUser() =>
