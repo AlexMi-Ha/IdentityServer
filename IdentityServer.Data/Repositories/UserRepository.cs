@@ -1,33 +1,33 @@
-﻿using IdentityServer.Core.Abstractions;
+﻿using FluentValidation;
+using IdentityServer.Core.Abstractions;
 using IdentityServer.Core.Dto;
 using IdentityServer.Core.Exceptions;
 using IdentityServer.Core.Interfaces.Repositories;
 using IdentityServer.Data.Models;
 using IdentityServer.Data.Services;
 using Microsoft.AspNetCore.Identity;
+using ValidationException = IdentityServer.Core.Exceptions.ValidationException;
 
 namespace IdentityServer.Data.Repositories; 
 
-internal class UserRepository : IUserRepository {
-
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
-
-    private readonly TokenFactory _tokenFactory;
+internal class UserRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+        TokenFactory tokenFactory, IValidator<LoginModel> loginValidator, IValidator<RegisterModel> registerValidator)
+    : IUserRepository {
     
-    public UserRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, TokenFactory tokenFactory) {
-        _userManager = userManager;
-        _signInManager = signInManager;
-        _tokenFactory = tokenFactory;
-    }
-
+    
     public async Task<Result<JwtModel>> LoginUserAsync(LoginModel model) {
-        var user = await _userManager.FindByEmailAsync(model.Email);
+        
+        var validationRes = await loginValidator.ValidateAsync(model);
+        if (!validationRes.IsValid) {
+            return new ValidationException(validationRes.Errors);
+        }
+        
+        var user = await userManager.FindByEmailAsync(model.Email);
 
         if (user is null) {
             return new AuthFailureException("Invalid Email or Password!");
         }
-        var attempt = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
+        var attempt = await signInManager.CheckPasswordSignInAsync(user, model.Password, true);
         if (attempt.IsLockedOut) {
             return new AuthFailureException("User is locked out!");
         }
@@ -35,20 +35,26 @@ internal class UserRepository : IUserRepository {
             return new AuthFailureException("Invalid Email or Password!");
         }
         // Success
-        var roles = await _userManager.GetRolesAsync(user);
-        var claims = _tokenFactory.GetUserAuthClaims(user, roles);
-        return _tokenFactory.GenerateJwtSecurityToken(claims);
+        var roles = await userManager.GetRolesAsync(user);
+        var claims = tokenFactory.GetUserAuthClaims(user, roles);
+        return tokenFactory.GenerateJwtSecurityToken(claims);
     }
 
     public async Task<Result<JwtModel>> RegisterUserAsync(RegisterModel registerModel) {
-        var user = await _userManager.FindByEmailAsync(registerModel.Email);
+        
+        var validationRes = await registerValidator.ValidateAsync(registerModel);
+        if (!validationRes.IsValid) {
+            return new ValidationException(validationRes.Errors);
+        }
+        
+        var user = await userManager.FindByEmailAsync(registerModel.Email);
         if (user is not null) {
             return new UserOperationException("User already exists!");
         }
 
         user = CreateBaseUserModel(registerModel.Email, registerModel.Name);
 
-        var result = await _userManager.CreateAsync(user, registerModel.Password);
+        var result = await userManager.CreateAsync(user, registerModel.Password);
         if (!result.Succeeded) {
             return new UserOperationException("Failed to create account");
         }
@@ -57,29 +63,13 @@ internal class UserRepository : IUserRepository {
     }
 
     public async Task<Result> DeleteUserAsync(string userId) {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await userManager.FindByIdAsync(userId);
         if (user is null) {
             return new UserNotFoundException("User does not exist");
         }
 
-        var result = await _userManager.DeleteAsync(user);
+        var result = await userManager.DeleteAsync(user);
         return result.Succeeded ? true : new UserOperationException("Failed deleting the user");
-    }
-
-    public async Task<bool> IsNameAvailableAsync(string name) {
-        var user = await _userManager.FindByNameAsync(name);
-        return user is null;
-    }
-
-    public async Task<Result> ChangeNameAsync(string userId, string newName) {
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user is null) {
-            return new UserNotFoundException();
-        }
-
-        user.UserName = newName;
-        var res = await _userManager.UpdateAsync(user);
-        return res.Succeeded ? true : new UserOperationException();
     }
 
     private ApplicationUser CreateBaseUserModel(string email, string? name) {

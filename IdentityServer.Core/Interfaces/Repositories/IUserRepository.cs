@@ -12,6 +12,4 @@ public interface IUserRepository {
 
     Task<Result> DeleteUserAsync(string userId);
 
-    Task<bool> IsNameAvailableAsync(string name);
-    Task<Result> ChangeNameAsync(string userId, string newName);
 }

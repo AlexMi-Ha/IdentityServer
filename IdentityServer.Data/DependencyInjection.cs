@@ -27,6 +27,7 @@ public static class DependencyInjection {
         services.AddAuthenticationServices();
         
         services.AddTransient<TokenFactory>();
+        services.AddTransient<IUserOperationService, UserOperationService>();
         
         
         return services;
