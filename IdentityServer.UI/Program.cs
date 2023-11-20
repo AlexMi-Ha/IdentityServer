@@ -1,4 +1,5 @@
 using IdentityServer.Data;
+using IdentityServer.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDataServices(builder.Configuration, builder.Environment.IsDevelopment());
+builder.Services.AddValidators();
 
 var app = builder.Build();
 

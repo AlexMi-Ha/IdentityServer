@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer.Core", "Iden
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer.UI", "IdentityServer.UI\IdentityServer.UI.csproj", "{9CCBEA51-F806-494D-B822-CEEA3669D51B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer.Validation", "IdentityServer.Validation\IdentityServer.Validation.csproj", "{155283C8-E6AC-4161-8ACB-0B4E432648B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{9CCBEA51-F806-494D-B822-CEEA3669D51B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CCBEA51-F806-494D-B822-CEEA3669D51B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CCBEA51-F806-494D-B822-CEEA3669D51B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{155283C8-E6AC-4161-8ACB-0B4E432648B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{155283C8-E6AC-4161-8ACB-0B4E432648B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{155283C8-E6AC-4161-8ACB-0B4E432648B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{155283C8-E6AC-4161-8ACB-0B4E432648B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

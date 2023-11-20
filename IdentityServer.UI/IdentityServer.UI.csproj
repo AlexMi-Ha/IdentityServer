@@ -9,6 +9,7 @@
     <ItemGroup>
       <ProjectReference Include="..\IdentityServer.Core\IdentityServer.Core.csproj" />
       <ProjectReference Include="..\IdentityServer.Data\IdentityServer.Data.csproj" />
+      <ProjectReference Include="..\IdentityServer.Validation\IdentityServer.Validation.csproj" />
     </ItemGroup>
 
     <ItemGroup>
