@@ -7,8 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace IdentityServer.UI.Controllers; 
 
 [Route("auth")]
-public class AuthController(IUserRepository userRepo, IConfiguration configuration) : Controller {
-    
+public class AuthController : Controller {
+    private readonly IUserRepository _userRepo;
+    private readonly IConfiguration _configuration;
+    public AuthController(IUserRepository userRepo, IConfiguration configuration) {
+        _userRepo = userRepo;
+        _configuration = configuration;
+    }
+
     [HttpGet("login")]
     public IActionResult Login([FromQuery]string? returnUrl) {
         ViewData["ReturnUrl"] = returnUrl;
@@ -33,7 +39,7 @@ public class AuthController(IUserRepository userRepo, IConfiguration configurati
 
     [HttpPost("loginaction")]
     public async Task<IActionResult> LoginAction([FromForm]LoginModel loginModel, [FromQuery]string? returnUrl) {
-        var jwt = await userRepo.LoginUserAsync(loginModel);
+        var jwt = await _userRepo.LoginUserAsync(loginModel);
         return jwt.Match<IActionResult>(
             succ => {
                 SetupAuthCookie(succ);
@@ -56,7 +62,7 @@ public class AuthController(IUserRepository userRepo, IConfiguration configurati
     public async Task<IActionResult> RegisterAction([FromForm] RegisterModel registerModel,
         [FromQuery] string? returnUrl) {
 
-        var jwt = await userRepo.RegisterUserAsync(registerModel);
+        var jwt = await _userRepo.RegisterUserAsync(registerModel);
         return jwt.Match<IActionResult>(
             succ => {
                 SetupAuthCookie(succ);
@@ -81,7 +87,7 @@ public class AuthController(IUserRepository userRepo, IConfiguration configurati
             "identity-token",
             jwt.Token, 
                 new CookieOptions(){
-                    Domain = configuration.GetCookieDomain(),
+                    Domain = _configuration.GetCookieDomain(),
                     Expires = jwt.ExpiresDateTimeOffset,
                     Path = "/",
                     Secure = true,

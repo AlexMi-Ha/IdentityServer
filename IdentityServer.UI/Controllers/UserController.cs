@@ -9,27 +9,42 @@ namespace IdentityServer.UI.Controllers;
 
 // TODO: Authorize
 [Route("user")]
-public class UserController(IUserRepository userRepo, IUserOperationService userOpService) : Controller {
-    
-    public IActionResult Index() {
-        var user = GetDefaultUser();
-        return View(user);
+public class UserController : Controller {
+
+    private readonly IUserRepository _userRepo;
+    private readonly IUserOperationService _userOpService;
+    public UserController(IUserRepository userRepo, IUserOperationService userOpService) {
+        _userOpService = userOpService;
+        _userRepo = userRepo;
+    }
+
+    public async Task<IActionResult> Index() {
+        var userId = GetUserId();
+        var user = await _userRepo.GetUserAsync(userId);
+        
+        return user.Match<IActionResult>(
+            View,
+            err => err switch {
+                UserNotFoundException => NotFound("User not found"),
+                _ => StatusCode(500)
+            }
+        );
     }
 
     [HttpGet("api/isNameAvailable")]
     public async Task<bool> IsNameAvailable([FromQuery]string name) {
-        return await userOpService.IsNameAvailableAsync(name);
+        return await _userOpService.IsNameAvailableAsync(name);
     }
 
     [HttpPost("api/changeName")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ChangeName([FromBody]string name) {
-        var available = await userOpService.IsNameAvailableAsync(name);
+        var available = await _userOpService.IsNameAvailableAsync(name);
         if (!available) {
             return UnprocessableEntity("Name is not available");
         }
 
-        var res = await userOpService.ChangeNameAsync(new ChangeNameModel(GetUserId(), name));
+        var res = await _userOpService.ChangeNameAsync(new ChangeNameModel(GetUserId(), name));
         return res.Match<IActionResult>(
             Ok,
             err => {

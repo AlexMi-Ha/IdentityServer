@@ -11,5 +11,6 @@ public interface IUserRepository {
     Task<Result<JwtModel>> RegisterUserAsync(RegisterModel registerModel);
 
     Task<Result> DeleteUserAsync(string userId);
+    Task<Result<UserModel>> GetUserAsync(string userId);
 
 }
