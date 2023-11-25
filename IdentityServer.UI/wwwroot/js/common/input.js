@@ -39,6 +39,29 @@ function checkPwRules(ele) {
     return valid;
 }
 
+function checkNameRules(ele) {
+    const name = ele.value;
+    const validationText = ele.parentElement.nextElementSibling;
+    let valid = true;
+    if(name.length <= 0) {
+        validationText.innerHTML = "Name cannot be empty";
+        valid = false;
+    }else if(name.length > 36) {
+        validationText.innerHTML = "Name cannot be longer than 36 characters";
+        valid = false;
+    }else if(!name.match(/^[a-zA-Z][a-zA-Z0-9\s\-]*$/)) {
+        validationText.innerHTML = "Names can only include alphanumeric characters, spaces or dashes!";
+        valid = false;
+    }
+    
+    if(valid) {
+        validationText.parentElement.classList.remove("invalid");
+    }else {
+        validationText.parentElement.classList.add("invalid");
+    }
+    return valid;
+}
+
 function checkPwRepeat(eleRepeat, eleCompare) {
     if(eleRepeat.value !== eleCompare.value) {
         eleRepeat.parentElement.parentElement.classList.add('invalid');
@@ -65,6 +88,9 @@ function validateForm(form) {
     form.querySelectorAll('.validated-input-container input[type=email]').forEach(ele => {
         valid &&= checkEmail(ele);
     });
+    form.querySelectorAll('.validated-input-container .name-input').forEach(input => {
+        valid &&= checkNameRules(input);
+    });
     form.querySelectorAll('.validated-input-container input[data-input=password]').forEach(ele => {
         let rules = checkPwRules(ele);
         console.log("Passwordcheck",valid, rules);
@@ -80,6 +106,10 @@ function validateForm(form) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    
+    document.querySelectorAll('.error-card').forEach(card => {
+        setTimeout(() =>card.classList.add('invisible'), 5000);
+    })
 
     document.querySelectorAll('.password-toggle').forEach(btn => {
         btn.addEventListener('mousedown', () => uncloakPassword(btn));
@@ -105,6 +135,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         form.querySelectorAll('.validated-input-container input[type=email]').forEach(input => {
             input.addEventListener('blur', () => checkEmail(input));
+        });
+        
+        form.querySelectorAll('.validated-input-container .name-input').forEach(input => {
+            input.addEventListener('blur', () => checkNameRules(input));
         });
 
         form.querySelectorAll('.validated-input-container input[data-input=password]').forEach(input => {

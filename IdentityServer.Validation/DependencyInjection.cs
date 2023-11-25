@@ -14,6 +14,8 @@ public static class DependencyInjection {
         services.AddTransient<IValidator<RegisterModel>, RegisterValidator>();
         services.AddTransient<IValidator<RoleModel>, RoleModelValidator>();
         
+        ValidatorOptions.Global.LanguageManager.Enabled = false;
+        
         return services;
     } 
 }

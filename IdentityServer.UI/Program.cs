@@ -1,3 +1,4 @@
+using System.Net;
 using IdentityServer.Data;
 using IdentityServer.Validation;
 
@@ -20,6 +21,15 @@ if (!app.Environment.IsDevelopment()) {
 
 await app.EnsureDatabaseOnStartupAsync(app.Environment.IsDevelopment());
 
+app.UseStatusCodePages(context => {
+    var response = context.HttpContext.Response;
+    if (response.StatusCode == (int) HttpStatusCode.Unauthorized) {
+        response.Redirect("auth/login");
+    }
+
+    return Task.CompletedTask;
+});
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -27,6 +37,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",

@@ -16,14 +16,16 @@ public class AuthController : Controller {
     }
 
     [HttpGet("login")]
-    public IActionResult Login([FromQuery]string? returnUrl) {
+    public IActionResult Login([FromQuery]string? returnUrl, string? error) {
         ViewData["ReturnUrl"] = returnUrl;
+        ViewData["Error"] = error;
         return View();
     }
 
     [HttpGet("register")]
-    public IActionResult Register([FromQuery]string? returnUrl) {
+    public IActionResult Register([FromQuery]string? returnUrl, string? error) {
         ViewData["ReturnUrl"] = returnUrl;
+        ViewData["Error"] = error;
         return View();
     }
 
@@ -46,12 +48,12 @@ public class AuthController : Controller {
                 if (string.IsNullOrWhiteSpace(returnUrl)) {
                     return RedirectToAction("Index", "User");
                 }
-                return RedirectToRoute(returnUrl);
+                return Redirect(returnUrl);
             },
             err => {
                 return err switch {
-                    ValidationException => UnprocessableEntity(err.Message),
-                    AuthFailureException => Unauthorized(err.Message),
+                    ValidationException => RedirectToAction(nameof(Login), routeValues:new {ReturnUrl=returnUrl, Error=err.Message}),
+                    AuthFailureException => RedirectToAction(nameof(Login),routeValues:new {ReturnUrl=returnUrl, Error=err.Message}),
                     _ => StatusCode(500)
                 };
             }
@@ -69,13 +71,13 @@ public class AuthController : Controller {
                 if (string.IsNullOrWhiteSpace(returnUrl)) {
                     return RedirectToAction("Index", "User");
                 }
-                return RedirectToRoute(returnUrl);
+                return Redirect(returnUrl);
             },
             err => {
                 return err switch {
-                    ValidationException => UnprocessableEntity(err.Message),
-                    UserOperationException => UnprocessableEntity(err.Message),
-                    AuthFailureException => Unauthorized(err.Message),
+                    ValidationException => RedirectToAction(nameof(Register), routeValues:new {ReturnUrl=returnUrl, Error=err.Message}),
+                    UserOperationException => RedirectToAction(nameof(Register), routeValues:new {ReturnUrl=returnUrl, Error=err.Message}),
+                    AuthFailureException => RedirectToAction(nameof(Login), routeValues:new {ReturnUrl=returnUrl, Error=err.Message}),
                     _ => StatusCode(500)
                 };
             }

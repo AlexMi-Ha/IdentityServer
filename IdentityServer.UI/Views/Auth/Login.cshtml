@@ -6,11 +6,14 @@
     <link rel="stylesheet" href="~/css/login.css" />
 }
 
+@if(ViewData["Error"] != null) {
+    <div class="error-card">
+        <span>!</span>
+        <p>@ViewData["Error"]</p>
+    </div>
+}
 <div class="action-card">
-    <form class="login-panel" method="post" asp-controller="Auth" asp-action="LoginAction">
-        @if (ViewData["ReturnUrl"] != null) {
-            <input type="hidden" value="@ViewData["ReturnUrl"]" name="returnUrl"/>
-        }
+    <form class="login-panel" method="post" asp-controller="Auth" asp-action="LoginAction" asp-route-returnUrl="@ViewData["ReturnUrl"]">
         <div>
             <div class="login-panel-text">
                 <h1>Log in to your account</h1>

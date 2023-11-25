@@ -102,3 +102,26 @@ nav #theme-switcher {
 .low-opacity {
     opacity: .6;
 }
+
+.error-card {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display:grid;
+    grid-template-columns: 2em auto;
+    align-items: center;
+    background: var(--static1);
+    border-left: var(--primary) 5px solid;
+    padding: 1em;
+    opacity: 1;
+}
+
+.error-card span:first-child {
+    font-size: 40px;
+}
+
+.error-card.invisible {
+    transition: opacity .5s cubic-bezier(1.000, 0.045, 1.000, -0.185);
+    opacity: 0;
+}

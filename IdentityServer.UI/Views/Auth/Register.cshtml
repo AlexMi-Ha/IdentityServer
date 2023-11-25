@@ -6,11 +6,14 @@
     <link rel="stylesheet" href="~/css/login.css" />
 }
 
+@if(ViewData["Error"] != null) {
+    <div class="error-card">
+        <span>!</span>
+        <p>@ViewData["Error"]</p>
+    </div>
+}
 <div class="action-card">
-    <form class="login-panel validated-form">
-        @if (ViewData["ReturnUrl"] != null) {
-            <input type="hidden" value="@ViewData["ReturnUrl"]" name="returnUrl"/>
-        }
+    <form class="login-panel validated-form" asp-action="RegisterAction" asp-controller="Auth" asp-route-returnUrl="@ViewData["ReturnUrl"]">
         <div>
             <div class="login-panel-text">
                 <h1>Register an new account</h1>
@@ -22,9 +25,12 @@
                     <input placeholder="Email *" type="email" id="email-input" asp-for="Email" required tabindex="1"/>
                 </div>
             </div>
-            <div class="input-container input-2-col">
-                <span class="ti ti-user"></span>
-                <input placeholder="Name *" asp-for="Name" tabindex="2" required/>
+            <div class="validated-input-container">
+                <div class="input-container input-2-col">
+                    <span class="ti ti-user"></span>
+                    <input placeholder="Name *" class="name-input" asp-for="Name" tabindex="2" required/>
+                </div>
+                <p class="validation-text"></p>
             </div>
             <div class="validated-input-container">
                 <div class="input-container input-3-col">
