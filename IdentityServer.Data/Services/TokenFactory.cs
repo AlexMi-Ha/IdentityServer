@@ -17,7 +17,7 @@ internal class TokenFactory {
         return _jwtHandler.Create(claims);
     }
     
-    public List<Claim> GetUserAuthClaims(ApplicationUser user, IEnumerable<string> roles) {
+    public List<Claim> GetUserAuthClaims(ApplicationUser user, IEnumerable<RoleModel> roles) {
         var authClaims = new List<Claim> {
             new (ClaimTypes.NameIdentifier, user.Id),
         };
@@ -29,7 +29,7 @@ internal class TokenFactory {
             authClaims.Add(new Claim(ClaimTypes.Name, user.UserName));
         }
 
-        authClaims.AddRange(roles.Select(userRole => new Claim("roles", userRole)));
+        authClaims.AddRange(roles.Select(userRole => new Claim("roles", userRole.RoleName)));
 
         return authClaims;
     }

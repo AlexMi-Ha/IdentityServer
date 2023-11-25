@@ -6,8 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDataServices(builder.Configuration, builder.Environment.IsDevelopment());
 builder.Services.AddValidators();
+await builder.Services.AddDataServicesAsync(builder.Configuration, builder.Environment.IsDevelopment());
 
 var app = builder.Build();
 
@@ -18,11 +18,14 @@ if (!app.Environment.IsDevelopment()) {
     app.UseHsts();
 }
 
+await app.EnsureDatabaseOnStartupAsync(app.Environment.IsDevelopment());
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

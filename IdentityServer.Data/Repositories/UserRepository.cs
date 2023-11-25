@@ -13,12 +13,13 @@ namespace IdentityServer.Data.Repositories;
 
 internal class UserRepository : IUserRepository {
     
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IUserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly TokenFactory _tokenFactory;
     private readonly IValidator<LoginModel> _loginValidator;
     private readonly IValidator<RegisterModel> _registerValidator;
-    public UserRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+
+    public UserRepository(IUserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
         TokenFactory tokenFactory, IValidator<LoginModel> loginValidator, IValidator<RegisterModel> registerValidator) {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -54,7 +55,16 @@ internal class UserRepository : IUserRepository {
     }
 
     public async Task<Result<JwtModel>> RegisterUserAsync(RegisterModel registerModel) {
+
+        var res = await CreateUserAsync(registerModel);
+        if (res.IsFaulted) {
+            return res.Exception ?? new UserOperationException();
+        }
         
+        return await LoginUserAsync(new LoginModel{Email = registerModel.Email,Password = registerModel.Password});
+    }
+
+    public async Task<Result> CreateUserAsync(RegisterModel registerModel) {
         var validationRes = await _registerValidator.ValidateAsync(registerModel);
         if (!validationRes.IsValid) {
             return new ValidationException(validationRes.Errors);
@@ -68,11 +78,11 @@ internal class UserRepository : IUserRepository {
         user = CreateBaseUserModel(registerModel.Email, registerModel.Name);
 
         var result = await _userManager.CreateAsync(user, registerModel.Password);
-        if (!result.Succeeded) {
+        if (result.IsFaulted) {
             return new UserOperationException("Failed to create account");
         }
 
-        return await LoginUserAsync(new LoginModel{Email = registerModel.Email,Password = registerModel.Password});
+        return true;
     }
 
     public async Task<Result> DeleteUserAsync(string userId) {
@@ -82,15 +92,37 @@ internal class UserRepository : IUserRepository {
         }
 
         var result = await _userManager.DeleteAsync(user);
-        return result.Succeeded ? true : new UserOperationException("Failed deleting the user");
+        return result.IsSuccess ? true : new UserOperationException("Failed deleting the user");
     }
 
-    public async Task<Result<UserModel>> GetUserAsync(string userId) {
+    public async Task<Result<UserModel>> GetUserByIdAsync(string userId) {
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null) {
             return new UserNotFoundException();
         }
-        return user.MapToDto();
+
+        var roles = await _userManager.GetRolesAsync(user);
+        return user.MapToDto(roles.ToArray());
+    }
+
+    public async Task<Result<UserModel>> GetUserByEmailAsync(string email) {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user is null) {
+            return new UserNotFoundException();
+        }
+        var roles = await _userManager.GetRolesAsync(user);
+        return user.MapToDto(roles.ToArray());
+    }
+
+
+    public async Task<List<UserModel>> GetUsersAsync() {
+        return (await _userManager.GetAllAsync())
+            .Select(e => e.MapToDto(Array.Empty<RoleModel>()))
+            .ToList();
+    }
+
+    public Task<bool> AnyUsersAsync() {
+        return _userManager.AnyUsersAsync();
     }
 
     private ApplicationUser CreateBaseUserModel(string email, string? name) {

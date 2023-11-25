@@ -14,9 +14,9 @@ namespace IdentityServer.Data.Repositories;
 
 internal class RoleRepository : IRoleRepository {
     private readonly RoleManager<ApplicationRole> _roleManager;
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IUserManager<ApplicationUser> _userManager;
     private readonly IValidator<RoleModel> _roleValidator;
-    public RoleRepository(RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager, IValidator<RoleModel> roleValidator) {
+    public RoleRepository(RoleManager<ApplicationRole> roleManager, IUserManager<ApplicationUser> userManager, IValidator<RoleModel> roleValidator) {
         _roleManager = roleManager;
         _userManager = userManager;
         _roleValidator = roleValidator;
@@ -36,7 +36,7 @@ internal class RoleRepository : IRoleRepository {
         var users = await _userManager.GetUsersInRoleAsync(roleName);
 
         return new Result<IEnumerable<UserModel>>(
-            users.Select(e => e.MapToDto()));
+            users.Select(e => e.MapToDto(Array.Empty<RoleModel>())));
     }
 
     public async Task<Result<RoleModel>> AddNewRoleAsync(RoleModel model) {
@@ -74,6 +74,6 @@ internal class RoleRepository : IRoleRepository {
         }
         var result = await _userManager.AddToRoleAsync(user, roleName);
 
-        return result.Succeeded ? true : new UserOperationException("Failed adding the user to the role");
+        return result.IsSuccess ? true : new UserOperationException("Failed adding the user to the role");
     }
 }

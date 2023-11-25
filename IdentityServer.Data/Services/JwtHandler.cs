@@ -17,6 +17,10 @@ internal class JwtHandler : IJwtHandler {
     private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
     private SecurityKey _issuerSigningKey;
     private SigningCredentials _signingCredentials;
+
+    private RSA _privateRsa;
+    private RSA _publicRsa;
+    
     public TokenValidationParameters Parameters { get; private set; }
     
     public JwtHandler(IConfiguration config) {
@@ -28,18 +32,22 @@ internal class JwtHandler : IJwtHandler {
         ConfigureJwtParameters();
     }
 
+    ~JwtHandler() {
+        _privateRsa?.Dispose();
+        _publicRsa?.Dispose();
+    }
+
     private void ConfigureRsa(string publicKeyPath, string privateKeyPath) {
-        using (var publicRsa = RSA.Create()) {
-            var publicKeyXml = File.ReadAllText(publicKeyPath);
-            publicRsa.FromXmlString(publicKeyXml);
-            _issuerSigningKey = new RsaSecurityKey(publicRsa);
-        }
-        using (var privateRsa = RSA.Create()) {
-            var privateKeyXml = File.ReadAllText(privateKeyPath);
-            privateRsa.FromXmlString(privateKeyXml);
-            var privateKey = new RsaSecurityKey(privateRsa);
-            _signingCredentials = new SigningCredentials(privateKey, SecurityAlgorithms.RsaSha256);
-        }
+        _publicRsa = RSA.Create();
+        var publicKeyXml = File.ReadAllText(publicKeyPath);
+        _publicRsa.FromXmlString(publicKeyXml);
+        _issuerSigningKey = new RsaSecurityKey(_publicRsa);
+
+        _privateRsa = RSA.Create();
+        var privateKeyXml = File.ReadAllText(privateKeyPath);
+        _privateRsa.FromXmlString(privateKeyXml);
+        var privateKey = new RsaSecurityKey(_privateRsa);
+        _signingCredentials = new SigningCredentials(privateKey, SecurityAlgorithms.RsaSha256);
     }
 
     private void ConfigureJwtParameters() {

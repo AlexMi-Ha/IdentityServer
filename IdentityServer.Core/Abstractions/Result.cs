@@ -8,8 +8,10 @@ public enum ResultState : byte {
 public readonly struct Result<A> : IEquatable<Result<A>>, IComparable<Result<A>> {
 
     internal readonly ResultState State;
-    internal readonly A Value;
+    public readonly A Value;
     readonly Exception? exception;
+
+    public Exception? Exception => exception;
 
     public Result(A value) {
         State = ResultState.Success;
@@ -112,6 +114,8 @@ public readonly struct Result : IEquatable<Result>, IComparable<Result> {
 
     internal readonly ResultState State;
     readonly Exception? exception;
+    
+    public Exception? Exception => exception;
 
     public Result() {
         State = ResultState.Success;

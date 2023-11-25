@@ -1,5 +1,6 @@
 ﻿using IdentityServer.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace IdentityServer.Data.Configuration; 
@@ -19,6 +20,12 @@ public class JwtOptionsConfiguration : IConfigureNamedOptions<JwtBearerOptions> 
     public void Configure(string? name, JwtBearerOptions options) {
         if (name == JwtBearerDefaults.AuthenticationScheme) {
             options.TokenValidationParameters = _jwtHandler.Parameters;
+            options.Events = new JwtBearerEvents() {
+                OnMessageReceived = ctx => {
+                    ctx.Token = ctx.Request.Cookies["identity-token"];
+                    return Task.CompletedTask;
+                }
+            };
         }
     }
 }

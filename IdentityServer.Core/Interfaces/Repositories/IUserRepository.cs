@@ -9,8 +9,12 @@ public interface IUserRepository {
     
     Task<Result<JwtModel>> LoginUserAsync(LoginModel model);
     Task<Result<JwtModel>> RegisterUserAsync(RegisterModel registerModel);
+    Task<Result> CreateUserAsync(RegisterModel registerModel);
 
     Task<Result> DeleteUserAsync(string userId);
-    Task<Result<UserModel>> GetUserAsync(string userId);
+    Task<Result<UserModel>> GetUserByIdAsync(string userId);
+    Task<Result<UserModel>> GetUserByEmailAsync(string email);
+    Task<List<UserModel>> GetUsersAsync();
+    Task<bool> AnyUsersAsync();
 
 }
