@@ -18,6 +18,10 @@ internal class UserOperationService : IUserOperationService {
     }
 
     public async Task<bool> IsNameAvailableAsync(string name) {
+        var validationRes = await _nameValidator.ValidateAsync(new ChangeNameModel(null, name));
+        if (!validationRes.IsValid) {
+            return false;
+        }
         var user = await _userManager.FindByNameAsync(name);
         return user is null;
     }

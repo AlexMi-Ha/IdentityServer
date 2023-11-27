@@ -22,11 +22,19 @@
     <div class="settings-panel">
         <h1>Account</h1>
         <section class="account-settings panel-action-grid">
-            <div class="input-container input-2-col input-width-300">
-                <span class="ti ti-user"></span>
-                <input placeholder="Name" value="@Model.UserName" required/>
+            <div class="flex-row">
+                <div class="input-container input-2-col input-width-300">
+                    <span class="ti ti-user"></span>
+                    <input placeholder="Name" id="change-name-input" value="@Model.UserName" required/>
+                </div>
+                <span class="hidden ti" id="change-name-indicator"></span>
             </div>
-            <button class="button button-width-200" id="change-name-button">Change Name</button>
+            <button class="button button-width-200" id="change-name-button" disabled>
+                <span class="default">Change Name</span>
+                <span class="loading ti ti-loading"></span>
+                <span class="error ti ti-check"></span>
+                <span class="changed ti ti-check active"></span>
+            </button>
             <p>Confirming your email address can greatly enhance your security by opening the possibility for two factor authentication and important mail updates</p>
             @if (Model.EmailConfirmed) {
                 <p class="mail-confirmed">Email Confirmed <span class="ti ti-check active"></span></p>
@@ -111,5 +119,85 @@
                 ele.classList.add('active');
             }
         })
+    });
+    
+    const changeNameInput = document.getElementById('change-name-input');
+    const changeNameValidIndicator = document.getElementById('change-name-indicator');
+    let oldNameInput = changeNameInput.value;
+    const changeNameBtn = document.getElementById('change-name-button');
+    let nameValueChanged = false;
+    let nameChangeable = false;
+    
+    changeNameInput.addEventListener('blur', () => {
+        if(changeNameInput.value === oldNameInput) {
+            return;
+        }
+        changeNameValidIndicator.classList.remove('hidden');
+        changeNameValidIndicator.classList.remove('ti-check');
+        changeNameValidIndicator.classList.remove('active');
+        changeNameValidIndicator.classList.add('ti-loading');
+        
+        checkValidName(changeNameInput.value)
+            .then(res => res.text())
+            .then(res => {
+                changeNameValidIndicator.classList.remove('ti-loading');
+                changeNameValidIndicator.classList.add('ti-check');
+                if (res === "true") {
+                    changeNameValidIndicator.classList.add('active');
+                    changeNameBtn.disabled = false;
+                    nameChangeable = true;
+                }else {
+                    changeNameValidIndicator.classList.remove('active');
+                    changeNameBtn.disabled = true;
+                    nameChangeable = false;
+                }
+                oldNameInput = changeNameInput.value;
+                nameValueChanged = true;
+            })
+            .catch(() => {
+                changeNameValidIndicator.classList.add('ti-check');
+                changeNameValidIndicator.classList.remove('active');
+                changeNameValidIndicator.classList.remove('ti-loading');
+                oldNameInput = changeNameInput.value;
+                nameValueChanged = true;
+                changeNameBtn.disabled = true;
+            });
+        
+        function checkValidName(newName) {
+            return fetch('/user/api/isNameAvailable?name=' + newName);
+        }
+    });
+    
+    changeNameBtn.addEventListener('click', () => {
+        if (!nameValueChanged || !nameChangeable) {
+            return;
+        }
+        changeNameBtn.classList.add('loading');
+        changeNameBtn.disabled = true;
+        fetch('/user/api/changeName', {
+            method: 'POST',
+            headers: {
+                "Content-Type":"application/json"  
+            },
+            body: JSON.stringify(changeNameInput.value)
+        }).then(res => {
+            nameValueChanged = false;
+            changeNameBtn.classList.remove('loading');
+            if (!res.ok) {
+                changeNameBtn.classList.add('error');
+                setTimeout(() => changeNameBtn.classList.remove('error'), 1500);
+                return;
+            }
+            changeNameBtn.classList.add('changed');
+            setTimeout(() => changeNameBtn.classList.remove('changed'), 1500);
+            changeNameValidIndicator.classList.remove('ti-check', 'ti-loading', 'active');
+            changeNameValidIndicator.classList.add('hidden');
+            nameChangeable = false;
+        }).catch(() => {
+            changeNameBtn.classList.remove('loading');
+            changeNameBtn.classList.add('error');
+            setTimeout(() => changeNameBtn.classList.remove('error'), 1500);
+            nameValueChanged = false;
+        });
     });
 </script>

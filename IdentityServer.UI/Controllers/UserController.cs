@@ -38,7 +38,6 @@ public class UserController : Controller {
     }
 
     [HttpPost("api/changeName")]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> ChangeName([FromBody]string name) {
         var available = await _userOpService.IsNameAvailableAsync(name);
         if (!available) {

@@ -47,12 +47,13 @@
     --static11: rgba(255,255,255,0.03);
     --white: #fff;
     --green: #71de74;
-
+    --btn-disabled-color: #a6a6a6;
+    
+    --font-size--large-heading-plus: 40px;
     --font-size--small: 14px;
     --font-size--default: 16px;
     --font-size--large: 24px;
     --font-size--large-heading: 32px;
-    --font-size--large-heading-plus: 40px;
 }
 
 body {
@@ -124,4 +125,9 @@ nav #theme-switcher {
 .error-card.invisible {
     transition: opacity .5s cubic-bezier(1.000, 0.045, 1.000, -0.185);
     opacity: 0;
+}
+
+.flex-row {
+    display:flex;
+    align-items: center;
 }

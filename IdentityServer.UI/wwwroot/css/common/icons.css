@@ -93,3 +93,29 @@
 .ti-x:before {
     content: "\eb55"
 }
+
+.ti-loading {
+    border: .4em solid transparent;
+    border-top: .4em solid var(--primary);
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    width: auto;
+    height: 100%;
+    max-height: 3em;
+    max-width: 3em;
+    animation: spin 2s linear infinite;
+}
+
+.ti.hidden {
+    display: none;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
