@@ -123,44 +123,67 @@
     
     const changeNameInput = document.getElementById('change-name-input');
     const changeNameValidIndicator = document.getElementById('change-name-indicator');
-    let oldNameInput = changeNameInput.value;
     const changeNameBtn = document.getElementById('change-name-button');
+    let oldNameInput = changeNameInput.value;
     let nameValueChanged = false;
     let nameChangeable = false;
+    
+    function setNameValidIndicatorHidden() {
+        nameChangeable = false;
+        changeNameBtn.disabled = true;
+        changeNameValidIndicator.classList.remove("ti-check");
+        changeNameValidIndicator.classList.remove("active");
+        changeNameValidIndicator.classList.remove("ti-loading");
+        changeNameValidIndicator.classList.add("hidden");
+    }
+    function setNameValidIndicatorLoading() {
+        nameChangeable = false;
+        changeNameBtn.disabled = true;
+        changeNameValidIndicator.classList.remove("ti-check");
+        changeNameValidIndicator.classList.remove("active");
+        changeNameValidIndicator.classList.remove("hidden");
+        changeNameValidIndicator.classList.add("ti-loading");
+    }
+    function setNameValidIndicatorChecked() {
+        nameChangeable = true;
+        changeNameBtn.disabled = false;
+        changeNameValidIndicator.classList.remove("ti-loading");
+        changeNameValidIndicator.classList.remove("hidden");
+        changeNameValidIndicator.classList.add("ti-check");
+        changeNameValidIndicator.classList.add("active");
+    }
+    function setNameValidIndicatorUnchecked() {
+        nameChangeable = false;
+        changeNameBtn.disabled = true;
+        changeNameValidIndicator.classList.remove("ti-loading");
+        changeNameValidIndicator.classList.remove("hidden");
+        changeNameValidIndicator.classList.remove("active");
+        changeNameValidIndicator.classList.add("ti-check");
+    }
+    function setNameValidIndicatorValid(valid) {
+        if (valid)
+            setNameValidIndicatorChecked();
+        else
+            setNameValidIndicatorUnchecked();
+    }
     
     changeNameInput.addEventListener('blur', () => {
         if(changeNameInput.value === oldNameInput) {
             return;
         }
-        changeNameValidIndicator.classList.remove('hidden');
-        changeNameValidIndicator.classList.remove('ti-check');
-        changeNameValidIndicator.classList.remove('active');
-        changeNameValidIndicator.classList.add('ti-loading');
+        setNameValidIndicatorLoading();
         
         checkValidName(changeNameInput.value)
             .then(res => res.text())
             .then(res => {
-                changeNameValidIndicator.classList.remove('ti-loading');
-                changeNameValidIndicator.classList.add('ti-check');
-                if (res === "true") {
-                    changeNameValidIndicator.classList.add('active');
-                    changeNameBtn.disabled = false;
-                    nameChangeable = true;
-                }else {
-                    changeNameValidIndicator.classList.remove('active');
-                    changeNameBtn.disabled = true;
-                    nameChangeable = false;
-                }
+                setNameValidIndicatorValid(res === "true");
                 oldNameInput = changeNameInput.value;
                 nameValueChanged = true;
             })
             .catch(() => {
-                changeNameValidIndicator.classList.add('ti-check');
-                changeNameValidIndicator.classList.remove('active');
-                changeNameValidIndicator.classList.remove('ti-loading');
+                setNameValidIndicatorUnchecked();
                 oldNameInput = changeNameInput.value;
                 nameValueChanged = true;
-                changeNameBtn.disabled = true;
             });
         
         function checkValidName(newName) {
@@ -190,9 +213,7 @@
             }
             changeNameBtn.classList.add('changed');
             setTimeout(() => changeNameBtn.classList.remove('changed'), 1500);
-            changeNameValidIndicator.classList.remove('ti-check', 'ti-loading', 'active');
-            changeNameValidIndicator.classList.add('hidden');
-            nameChangeable = false;
+            setNameValidIndicatorHidden();
         }).catch(() => {
             changeNameBtn.classList.remove('loading');
             changeNameBtn.classList.add('error');
