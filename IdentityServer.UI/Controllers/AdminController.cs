@@ -1,5 +1,21 @@
-﻿namespace IdentityServer.UI.Controllers; 
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-public class AdminController {
-    
+namespace IdentityServer.UI.Controllers; 
+
+[Microsoft.AspNetCore.Components.Route("admin")]
+[Authorize(Roles = "IDENTITY_ADMIN")]
+public class AdminController : ControllerBase {
+
+    public IActionResult Index() {
+        return View();
+    }
+
+    public IActionResult UsersDashboard() {
+        return NotFound();
+    }
+
+    public IActionResult RolesDashboard() {
+        return NotFound();
+    }
 }

@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin.css" />
+}
+
+
+<div class="content-panel">
+    <h1>Admin Dashboard</h1>
+    <div class="item-group">
+        <a asp-action="UsersDashboard" asp-controller="Admin" class="item">
+            <h1 class="ti ti-user"></h1>
+            <p>Users</p>
+        </a>
+        <a asp-action="RolesDashboard" asp-controller="Admin" class="item">
+            <h1 class="ti ti-lock"></h1>
+            <p>Roles</p>
+        </a>
+        <a title="Coming Soon" class="item">
+            <h1 class="ti ti-eye"></h1>
+            <p>Logs</p>
+        </a>
+    </div>
+</div>
