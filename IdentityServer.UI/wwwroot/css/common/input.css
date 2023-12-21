@@ -104,3 +104,45 @@ form .button {
 .validated-input-container.invalid .validation-text {
     display:block;
 }
+
+
+.async-loading-button .error,
+.async-loading-button .success,
+.async-loading-button .loading,
+.async-loading-button.loading .default,
+.async-loading-button.success .default,
+.async-loading-button.error .default {
+    display: none;
+}
+
+.async-loading-button.error .error,
+.async-loading-button.success .success {
+    display: inline;
+    vertical-align: middle;
+}
+
+.async-loading-button.loading .loading {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.async-loading-button.error .error:before,
+.async-loading-button.loading .loading:before,
+.async-loading-button.success .success:before {
+    color: var(--white) !important;
+    border-top-color: var(--white) !important;
+    font-size: var(--font-size--large);
+}
+
+.async-loading-button.error {
+    background-color: var(--primary);
+}
+
+.async-loading-button.success {
+    background-color: var(--green);
+}
+
+button[disabled]:not(.success,.error,.loading) {
+    cursor: default;
+    background-color: var(--btn-disabled-color);
+}

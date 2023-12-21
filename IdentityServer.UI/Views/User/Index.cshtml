@@ -10,9 +10,9 @@
     <div class="account-panel">
         <div class="top-panel">
             <div class="profile-picture-container">
-                <img src="/usercontent/@Model.UserId" class="round" alt="Profile Picture">
-                <input type="file" id="profile-picture-upload" hidden>
-                <label class="picture-switcher" for="profile-picture-upload"><span class="ti ti-pencil"></span></label>
+                <img src="/usercontent/@Model.UserId" class="round" id="user-image-display" alt="Profile Picture">
+                <input type="file" id="profile-picture-upload" accept=".jpg, .jpeg, .png" hidden onchange="uploadImage()">
+                <label class="picture-switcher" for="profile-picture-upload"><span class="ti ti-pencil" title="Edit profile image"></span></label>
             </div>
             <p class="username">@Model.UserName</p>
             <p class="email low-opacity">@Model.Email</p>
@@ -29,30 +29,30 @@
                 </div>
                 <span class="hidden ti" id="change-name-indicator"></span>
             </div>
-            <button class="button button-width-200" id="change-name-button" disabled>
+            <button class="button button-width-200 async-loading-button" id="change-name-button" disabled>
                 <span class="default">Change Name</span>
                 <span class="loading ti ti-loading"></span>
                 <span class="error ti ti-check"></span>
-                <span class="changed ti ti-check active"></span>
+                <span class="success ti ti-check active"></span>
             </button>
             <p>Confirming your email address can greatly enhance your security by opening the possibility for two factor authentication and important mail updates</p>
             @if (Model.EmailConfirmed) {
                 <p class="mail-confirmed">Email Confirmed <span class="ti ti-check active"></span></p>
             }
             else {
-                <button class="button button-width-200">Confirm Email</button>
+                <button class="button button-width-200" disabled>Confirm Email</button>
             }
             <p>If you do not use/want your account anymore you can simple delete it. All user data will be deleted.</p>
-            <button class="button button-primary button-width-200">Delete Account</button>
+            <button class="button button-primary button-width-200" disabled>Delete Account</button>
         </section>
         <hr>
         <h1>Security</h1>
         <section class="security-settings panel-action-grid">
             <p>Two Factor Authentication (2FA) is a way to further secure your account. Whenever you want to login, you will receive a message in your email inbox containing the pin you need to login.</p>
             @if (Model.MFAEnabled) {
-                <button class="button button-width-200">Disable 2FA</button>
+                <button class="button button-width-200" disabled>Disable 2FA</button>
             }else {
-                <button class="button button-width-200">Enable 2FA</button>
+                <button class="button button-width-200" disabled>Enable 2FA</button>
             }
             
         </section>
@@ -85,7 +85,7 @@
                     </div>
                     <p class="validation-text">Your passwords do not match! Please try again!</p>
                 </div>
-                <button type="submit" class="button button-primary" id="change-password-button">Change Password</button>
+                <button type="submit" class="button button-primary" id="change-password-button" disabled>Change Password</button>
             </form>
         </section>
         <hr>
@@ -121,46 +121,95 @@
         })
     });
     
+    function uploadImage() {
+        const fileUpload = document.getElementById('profile-picture-upload');
+        const imageDisplay = document.getElementById('user-image-display');
+        if (fileUpload.files.length !== 1) {
+            return;
+        }
+        let data = new FormData();
+        data.append('image', fileUpload.files[0]);
+        
+        fetch('/usercontent/uploadImage', {
+            method: 'POST',
+            body: data
+        }).then(res => {
+            if (!res.ok) {
+                return;
+            }
+            imageDisplay.src = imageDisplay.src.split('?')[0] + "?" + +new Date();
+            console.log(imageDisplay.src);
+        }).catch();
+    }
+    
+    
     const changeNameInput = document.getElementById('change-name-input');
     const changeNameValidIndicator = document.getElementById('change-name-indicator');
-    let oldNameInput = changeNameInput.value;
     const changeNameBtn = document.getElementById('change-name-button');
+    let oldNameInput = changeNameInput.value;
     let nameValueChanged = false;
     let nameChangeable = false;
+    
+    function setNameValidIndicatorHidden() {
+        nameChangeable = false;
+        changeNameBtn.disabled = true;
+        changeNameValidIndicator.classList.remove("ti-check");
+        changeNameValidIndicator.classList.remove("active");
+        changeNameValidIndicator.classList.remove("ti-loading");
+        changeNameValidIndicator.classList.add("hidden");
+        changeNameValidIndicator.title = "";
+    }
+    function setNameValidIndicatorLoading() {
+        nameChangeable = false;
+        changeNameBtn.disabled = true;
+        changeNameValidIndicator.classList.remove("ti-check");
+        changeNameValidIndicator.classList.remove("active");
+        changeNameValidIndicator.classList.remove("hidden");
+        changeNameValidIndicator.classList.add("ti-loading");
+        changeNameValidIndicator.title = "";
+    }
+    function setNameValidIndicatorChecked() {
+        nameChangeable = true;
+        changeNameBtn.disabled = false;
+        changeNameValidIndicator.classList.remove("ti-loading");
+        changeNameValidIndicator.classList.remove("hidden");
+        changeNameValidIndicator.classList.add("ti-check");
+        changeNameValidIndicator.classList.add("active");
+        changeNameValidIndicator.title = "This name is available!";
+    }
+    function setNameValidIndicatorUnchecked() {
+        nameChangeable = false;
+        changeNameBtn.disabled = true;
+        changeNameValidIndicator.classList.remove("ti-loading");
+        changeNameValidIndicator.classList.remove("hidden");
+        changeNameValidIndicator.classList.remove("active");
+        changeNameValidIndicator.classList.add("ti-check");
+        changeNameValidIndicator.title = "This name is not available!";
+    }
+    function setNameValidIndicatorValid(valid) {
+        if (valid)
+            setNameValidIndicatorChecked();
+        else
+            setNameValidIndicatorUnchecked();
+    }
     
     changeNameInput.addEventListener('blur', () => {
         if(changeNameInput.value === oldNameInput) {
             return;
         }
-        changeNameValidIndicator.classList.remove('hidden');
-        changeNameValidIndicator.classList.remove('ti-check');
-        changeNameValidIndicator.classList.remove('active');
-        changeNameValidIndicator.classList.add('ti-loading');
+        setNameValidIndicatorLoading();
         
         checkValidName(changeNameInput.value)
             .then(res => res.text())
             .then(res => {
-                changeNameValidIndicator.classList.remove('ti-loading');
-                changeNameValidIndicator.classList.add('ti-check');
-                if (res === "true") {
-                    changeNameValidIndicator.classList.add('active');
-                    changeNameBtn.disabled = false;
-                    nameChangeable = true;
-                }else {
-                    changeNameValidIndicator.classList.remove('active');
-                    changeNameBtn.disabled = true;
-                    nameChangeable = false;
-                }
+                setNameValidIndicatorValid(res === "true");
                 oldNameInput = changeNameInput.value;
                 nameValueChanged = true;
             })
             .catch(() => {
-                changeNameValidIndicator.classList.add('ti-check');
-                changeNameValidIndicator.classList.remove('active');
-                changeNameValidIndicator.classList.remove('ti-loading');
+                setNameValidIndicatorUnchecked();
                 oldNameInput = changeNameInput.value;
                 nameValueChanged = true;
-                changeNameBtn.disabled = true;
             });
         
         function checkValidName(newName) {
@@ -188,11 +237,9 @@
                 setTimeout(() => changeNameBtn.classList.remove('error'), 1500);
                 return;
             }
-            changeNameBtn.classList.add('changed');
-            setTimeout(() => changeNameBtn.classList.remove('changed'), 1500);
-            changeNameValidIndicator.classList.remove('ti-check', 'ti-loading', 'active');
-            changeNameValidIndicator.classList.add('hidden');
-            nameChangeable = false;
+            changeNameBtn.classList.add('success');
+            setTimeout(() => changeNameBtn.classList.remove('success'), 1500);
+            setNameValidIndicatorHidden();
         }).catch(() => {
             changeNameBtn.classList.remove('loading');
             changeNameBtn.classList.add('error');

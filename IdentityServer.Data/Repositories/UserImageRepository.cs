@@ -19,21 +19,21 @@ internal class UserImageRepository : IUserImageRepository {
         _logger = logger;
     }
 
-    public string GetImagePathForUser(string userId) {
-        return GetImagePathForUser(userId, true);
+    public string GetImagePathForUser(string userId, string webRootBasePath) {
+        return GetImagePathForUser(userId, true, webRootBasePath);
     }
 
-    private string GetImagePathForUser(string userId, bool checkForExistence) {
+    private string GetImagePathForUser(string userId, bool checkForExistence, string webRootBasePath) {
         var imageDirectory = _config.GetImagesPath();
         var userIdHash = Crypt.ComputePathSafeString(userId);
         var imagePath = Path.Combine(imageDirectory, userIdHash + ".jpg");
-        if (checkForExistence && !File.Exists(imagePath)) {
+        if (checkForExistence && !File.Exists(webRootBasePath + imagePath)) {
             return Path.Combine(imageDirectory, "default.jpg");
         }
         return imagePath;
     }
 
-    public async Task<Result<string>> SaveImageForUserAsync(string userId, IImageFile image) {
+    public async Task<Result<string>> SaveImageForUserAsync(string userId, IImageFile image, string webRootBasePath) {
         // Is the image bigger than 2MiB
         if (image.Length > 2_097_152) {
             return new ImageOperationException("File must be smaller than 2MB!");
@@ -63,8 +63,8 @@ internal class UserImageRepository : IUserImageRepository {
             }
 
             try {
-                var path = GetImagePathForUser(userId, false);
-                await imageModel.SaveAsJpegAsync(path);
+                var path = GetImagePathForUser(userId, false, "");
+                await imageModel.SaveAsJpegAsync(webRootBasePath + path);
                 return path;
             }
             catch (Exception ex) {
@@ -83,20 +83,18 @@ internal class UserImageRepository : IUserImageRepository {
 
     }
 
-    public Result DeleteImageForUser(string userId) {
-        var path = GetImagePathForUser(userId, false);
-        if (File.Exists(path)) {
-            try {
-                File.Delete(path);
+    public Result DeleteImageForUser(string userId, string webRootBasePath) {
+        var path = webRootBasePath + GetImagePathForUser(userId, false, "");
+        if (!File.Exists(path)) return true;
+        try {
+            File.Delete(path);
+        }
+        catch (Exception ex) {
+            if (_logger.IsEnabled(LogLevel.Warning)) {
+                _logger.LogWarning("Could not delete an image\nProduced Exception:{ex}",ex);
             }
-            catch (Exception ex) {
-                if (_logger.IsEnabled(LogLevel.Warning)) {
-                    _logger.LogWarning("Could not delete an image\nProduced Exception:{ex}",ex);
-                }
 
-                return false;
-            }
-            
+            return false;
         }
 
         return true;

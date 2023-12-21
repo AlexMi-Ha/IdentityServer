@@ -170,43 +170,6 @@
     padding-right: 1em;
 }
 
-#change-name-button .error,
-#change-name-button .changed,
-#change-name-button .loading,
-#change-name-button.loading .default,
-#change-name-button.changed .default,
-#change-name-button.error .default {
-    display: none;
-}
-
-#change-name-button.error .error,
-#change-name-button.loading .loading,
-#change-name-button.changed .changed {
-    display: inline;
-    vertical-align: middle;
-}
-
-#change-name-button.error .error:before,
-#change-name-button.loading .loading:before,
-#change-name-button.changed .changed:before {
-    color: var(--white) !important;
-    border-top-color: var(--white) !important;
-    font-size: var(--font-size--large);
-}
-
-#change-name-button.error {
-    background-color: var(--primary);
-}
-
-#change-name-button.changed {
-    background-color: var(--green);
-}
-
-#change-name-button[disabled]:not(.changed,.error,.loading) {
-    cursor: default;
-    background-color: var(--btn-disabled-color);
-}
-
 #change-name-indicator{
     font-size: var(--font-size--large);
 }
