@@ -11,22 +11,25 @@ public static class IImageFileExtensions {
         //-------------------------------------------
         //  Check the image mime types
         //-------------------------------------------
-        if (postedFile.ContentType.ToLower() != "image/jpg" &&
-            postedFile.ContentType.ToLower() != "image/jpeg" &&
-            postedFile.ContentType.ToLower() != "image/pjpeg" &&
-            postedFile.ContentType.ToLower() != "image/gif" &&
-            postedFile.ContentType.ToLower() != "image/x-png" &&
-            postedFile.ContentType.ToLower() != "image/png") {
+        if (!postedFile.ContentType.Equals("image/jpg", StringComparison.CurrentCultureIgnoreCase) &&
+            !postedFile.ContentType.Equals("image/jpeg", StringComparison.CurrentCultureIgnoreCase) &&
+            //postedFile.ContentType.ToLower() != "image/pjpeg" &&
+            //postedFile.ContentType.ToLower() != "image/gif" &&
+            //postedFile.ContentType.ToLower() != "image/x-png" &&
+            //postedFile.ContentType.ToLower() != "image/pjpeg" &&
+            //postedFile.ContentType.ToLower() != "image/gif" &&
+            //postedFile.ContentType.ToLower() != "image/x-png" &&
+            !postedFile.ContentType.Equals("image/png", StringComparison.CurrentCultureIgnoreCase)) {
             return false;
         }
 
         //-------------------------------------------
         //  Check the image extension
         //-------------------------------------------
-        if (Path.GetExtension(postedFile.FileName).ToLower() != ".jpg"
-            && Path.GetExtension(postedFile.FileName).ToLower() != ".png"
-            && Path.GetExtension(postedFile.FileName).ToLower() != ".gif"
-            && Path.GetExtension(postedFile.FileName).ToLower() != ".jpeg") {
+        if (!Path.GetExtension(postedFile.FileName).Equals(".jpg", StringComparison.CurrentCultureIgnoreCase)
+            && !Path.GetExtension(postedFile.FileName).Equals(".png", StringComparison.CurrentCultureIgnoreCase)
+            //&& Path.GetExtension(postedFile.FileName).ToLower() != ".gif"
+            && !Path.GetExtension(postedFile.FileName).Equals(".jpeg", StringComparison.CurrentCultureIgnoreCase)) {
             return false;
         }
 

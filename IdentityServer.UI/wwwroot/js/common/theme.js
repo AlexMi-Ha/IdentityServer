@@ -6,9 +6,11 @@ function switchTheme(ele = document.getElementById('theme-switcher'), theme = !l
     if(lightTheme) {
         ele.classList.remove('dark');
         setCookie('theme', 'light', 720);
+        ele.title = "Switch to dark mode";
     }else {
         ele.classList.add('dark');
         setCookie('theme', 'dark', 720);
+        ele.title = "Switch to light mode";
     }
 }
 

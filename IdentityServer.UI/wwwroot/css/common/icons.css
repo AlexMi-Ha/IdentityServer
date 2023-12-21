@@ -95,6 +95,7 @@
 }
 
 .ti-loading {
+    display: inline-block;
     border: .4em solid transparent;
     border-top: .4em solid var(--primary);
     border-radius: 50%;

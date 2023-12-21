@@ -10,7 +10,7 @@ namespace IdentityServer.UI.Controllers;
 
 [Authorize]
 [Route("user")]
-public class UserController : Controller {
+public class UserController : ControllerBase {
 
     private readonly IUserRepository _userRepo;
     private readonly IUserOperationService _userOpService;
@@ -58,7 +58,5 @@ public class UserController : Controller {
         );
     }
 
-    private string GetUserId() {
-        return HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedException();
-    }
+    
 }
