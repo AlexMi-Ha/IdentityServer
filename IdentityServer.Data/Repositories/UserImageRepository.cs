@@ -84,19 +84,17 @@ internal class UserImageRepository : IUserImageRepository {
     }
 
     public Result DeleteImageForUser(string userId, string webRootBasePath) {
-        var path = GetImagePathForUser(userId, false, webRootBasePath);
-        if (File.Exists(path)) {
-            try {
-                File.Delete(path);
+        var path = webRootBasePath + GetImagePathForUser(userId, false, "");
+        if (!File.Exists(path)) return true;
+        try {
+            File.Delete(path);
+        }
+        catch (Exception ex) {
+            if (_logger.IsEnabled(LogLevel.Warning)) {
+                _logger.LogWarning("Could not delete an image\nProduced Exception:{ex}",ex);
             }
-            catch (Exception ex) {
-                if (_logger.IsEnabled(LogLevel.Warning)) {
-                    _logger.LogWarning("Could not delete an image\nProduced Exception:{ex}",ex);
-                }
 
-                return false;
-            }
-            
+            return false;
         }
 
         return true;
