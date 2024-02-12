@@ -1,0 +1,38 @@
+﻿@model List<IdentityServer.Core.Dto.UserModel>
+
+<div class="content-panel">
+    <h1>Usermanagement</h1>
+    <div class="search-controls">
+        <button class="button button-width-100 button-check-box" data-for="chkb-mailconfirmed">Email Confirmed</button>
+        <button class="button button-width-100 button-check-box" data-for="chkb-2fa">2FA</button>
+        <button class="button button-width-100 button-check-box" data-for="chkb-locked">Locked Out</button>
+        <input type="hidden" id="chkb-mailconfirmed"/>
+        <input type="hidden" id="chkb-2fa"/>
+        <input type="hidden" id="chkb-locked"/>
+        <div class="input-container input-2-col input-width-300 user-search">
+            <span class="ti ti-search"></span>
+            <input placeholder="Search..."/>
+        </div>
+    </div>
+    <div class="users-list">
+        @foreach (var user in Model) {
+            <div class="user-container">
+                <div class="user-info">
+                    <img class="profile-image round" src="/usercontent/@user.UserId" alt="Profile Picture">
+                    <p class="username">@user.UserName<br><span class="usermail">@user.Email</span></p>
+                    <p><span class="ti ti-shield @(user.MFAEnabled ? "active" : "")" title="@(user.MFAEnabled ? "Secured through 2FA" : "No 2FA activated")"></span><br><span class="ti ti-check @(user.EmailConfirmed ? "active" : "")" title="@(user.EmailConfirmed ? "Email confirmed" : "Email not confirmed")" aria-label="Email confirmed"></span></p>
+                </div>
+                @if (user.LockedOut) {
+                    <span class="ti ti-lock locked-icon" title="User is locked out"></span>
+                }
+                <div>
+                    <button class="button button-width-100 dialog-button-open" data-dialog-id="@user.UserId">View Roles</button>
+                </div>
+            </div>
+        }
+    </div>
+    <div id="dialog-window" data-dialogcontent-url="/">
+        <button id="dialog-button-close"><span class="ti ti-x"></span></button>
+        <div id="dialog-content-window"></div>
+    </div>
+</div>

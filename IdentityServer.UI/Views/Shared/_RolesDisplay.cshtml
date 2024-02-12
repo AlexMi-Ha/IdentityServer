@@ -1,0 +1,56 @@
+﻿@model RoleDialogViewModel
+<section id="role-dialog-container">
+
+    <h1>Roles</h1>
+    <div class="role-form"><div class="input-container input-width-200">
+            <select id="add-to-role-input" style="width:100%;height: 100%" placeholder="Role-name">
+                <option selected disabled value="lel">Choose role</option>
+                @foreach (var roleName in Model.AllRoles) {
+                    <option value="@roleName">@roleName</option>
+                }
+            </select>
+    </div>
+    <button onclick="addToRole(document.getElementById('add-to-role-input').value)">Add to Role</button></div>
+    @foreach (var role in Model.UserRoles) {
+    <div class="roles-container">
+        <div class="role">
+            <h2 title="@role.RoleDescription">@role.RoleName</h2>
+            <button class="icon-button" type="button" onclick="removeRole('@role.RoleName')"><span class="ti ti-check"></span></button>
+        </div>
+    </div>
+    }
+
+    <script>
+
+    function removeRole(role) {
+        const id = '@Model.UserId';
+        
+        fetch(`/admin/api/users/${id}/roles/${role}`, {
+            method: 'DELETE',
+            signal: loadController.signal
+        })
+        .then(e => e.text())
+        .then(e => {
+            document.getElementById('role-dialog-container').outerHTML = e;
+        });
+    }
+    
+    function addToRole(role) {
+            if (role === 'lel') {
+                return;
+            }
+            const id = '@Model.UserId';
+            
+            fetch(`/admin/api/users/${id}/roles/${role}`, {
+                method: 'POST',
+                signal: loadController.signal
+            })
+            .then(e => e.text())
+            .then(e => {
+                document.getElementById('role-dialog-container').outerHTML = e;
+            });
+        }
+
+    </script>
+
+</section>

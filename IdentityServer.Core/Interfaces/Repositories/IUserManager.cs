@@ -29,4 +29,7 @@ public interface IUserManager<T> {
     Task<IList<T>> GetUsersInRoleAsync(string role);
 
     Task<bool> IsInRoleAsync(T user, string role);
+
+    Task<List<string>> GetAllRolesAsync();
+    Task<Result> RemoveUserFromRoleAsync(T user, string roleName);
 }
