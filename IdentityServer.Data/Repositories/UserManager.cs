@@ -13,10 +13,10 @@ namespace IdentityServer.Data.Repositories;
 public class UserManager : IUserManager<ApplicationUser> {
 
     private readonly Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> _userManager;
-    private readonly RoleManager<RoleModel> _roleManager;
+    private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly ApplicationDbContext _dbContext;
     
-    public UserManager(UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext, RoleManager<RoleModel> roleManager) {
+    public UserManager(UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext, RoleManager<ApplicationRole> roleManager) {
         _userManager = userManager;
         _dbContext = dbContext;
         _roleManager = roleManager;
@@ -87,7 +87,7 @@ public class UserManager : IUserManager<ApplicationUser> {
     }
 
     public Task<List<string>> GetAllRolesAsync() {
-        return _roleManager.Roles.Select(e => e.RoleName).ToListAsync();
+        return _roleManager.Roles.Select(e => e.Name ?? "DEFAULT_ROLE").ToListAsync();
     }
 
     public async Task<Result> RemoveUserFromRoleAsync(ApplicationUser user, string roleName) {

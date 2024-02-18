@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityServer.UI.Controllers; 
 
-[Microsoft.AspNetCore.Components.Route("admin")]
+[Route("admin")]
 [Authorize(Roles = "IDENTITY_ADMIN")]
 public class AdminController : Controller {
 
@@ -27,6 +27,7 @@ public class AdminController : Controller {
     }
 
     [Route("api/users/{id}/roles")]
+    [HttpGet]
     public async Task<IActionResult> UserRoles(string id) {
         var allRoles = await _userRepository.GetAllRolesAsync();
         var roles = await _userRepository.GetUserRolesAsync(id);
@@ -55,6 +56,7 @@ public class AdminController : Controller {
         return await UserRoles(userId);
     }
     
+    [Route("roles")]
     public IActionResult RolesDashboard() {
         return NotFound();
     }

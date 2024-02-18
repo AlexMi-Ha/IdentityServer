@@ -67,6 +67,10 @@ form .button {
     width: 100px;
 }
 
+.button-fit-content {
+    width: fit-content;
+}
+
 .round {
     border-radius: 9999999px;
 }

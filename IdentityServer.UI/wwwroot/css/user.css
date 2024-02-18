@@ -1,0 +1,140 @@
+﻿.content-panel {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    background-color: var(--background);
+    height: 100%;
+    max-width: 900px;
+    min-width: min(100%, 900px);
+    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.35);
+    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.35);
+    padding: 0 2em;
+}
+
+.search-controls {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    justify-self: end;
+    align-self: end;
+    flex-wrap: wrap;
+    gap: .5em;
+    margin-bottom: 1em;
+}
+
+.users-list {
+    width: 100%;
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    background-color: var(--secondary);
+    gap: 1em;
+    padding: 0 1em;
+
+}
+
+.user-container {
+    padding: 0 1em;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+}
+
+.users-list :first-child(3n+1) {
+    justify-self: left;
+}
+
+.users-list :nth-child(3n+2) {
+    justify-self: center;
+}
+
+.users-list :nth-child(3n+3) {
+    justify-self: right;
+}
+
+.user-info {
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.username {
+    margin: 0 .5em;
+    font-size: var(--font-size--large);
+    line-height: .8em;
+}
+
+.usermail {
+    opacity: .6;
+    font-size: var(--font-size--default);
+}
+
+.locked-icon {
+    color: var(--primary);
+    font-size: var(--font-size--large-heading-plus);
+    margin: 0 .5em;
+}
+
+.profile-image {
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    width: 50px;
+    height: 50px;
+}
+
+#dialog-window {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50%;
+    height: 80%;
+    background-color: var(--secondary);
+    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.35);
+    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.35);
+    display: none;
+}
+
+#dialog-window.active {
+    display:block;
+}
+
+#dialog-button-close {
+    background: none;
+    border:none;
+    outline:none;
+    font-size: var(--font-size--large-heading);
+    color: var(--text);
+    cursor: pointer;
+    float: right;
+}
+
+#dialog-button-close:hover {
+    color:var(--primary);
+}
+
+#dialog-content-window {
+    padding: 1em;
+}
+
+.roles-container {
+    margin: 0 2em;
+}
+
+
+.role {
+    display:flex;
+    justify-content: space-between;
+}
+
+.icon-button {
+    all:unset;
+    cursor:pointer;
+    font-size: 32px;
+}
+
+.role-form .input-container {
+    display:inline-block;
+    margin-right: 1em;
+}

@@ -9,48 +9,14 @@
                     <option value="@roleName">@roleName</option>
                 }
             </select>
-    </div>
-    <button onclick="addToRole(document.getElementById('add-to-role-input').value)">Add to Role</button></div>
-    @foreach (var role in Model.UserRoles) {
-    <div class="roles-container">
-        <div class="role">
-            <h2 title="@role.RoleDescription">@role.RoleName</h2>
-            <button class="icon-button" type="button" onclick="removeRole('@role.RoleName')"><span class="ti ti-check"></span></button>
         </div>
-    </div>
+        <button class="button button-fit-content" onclick="addToRole(document.getElementById('add-to-role-input').value, '@Model.UserId')">Add to Role</button></div>
+    @foreach (var role in Model.UserRoles) {
+        <div class="roles-container">
+            <div class="role">
+                <h2 title="@role.RoleDescription">@role.RoleName</h2>
+                <button class="icon-button" type="button" onclick="removeRole('@role.RoleName', '@Model.UserId')"><span class="ti ti-check"></span></button>
+            </div>
+        </div>
     }
-
-    <script>
-
-    function removeRole(role) {
-        const id = '@Model.UserId';
-        
-        fetch(`/admin/api/users/${id}/roles/${role}`, {
-            method: 'DELETE',
-            signal: loadController.signal
-        })
-        .then(e => e.text())
-        .then(e => {
-            document.getElementById('role-dialog-container').outerHTML = e;
-        });
-    }
-    
-    function addToRole(role) {
-            if (role === 'lel') {
-                return;
-            }
-            const id = '@Model.UserId';
-            
-            fetch(`/admin/api/users/${id}/roles/${role}`, {
-                method: 'POST',
-                signal: loadController.signal
-            })
-            .then(e => e.text())
-            .then(e => {
-                document.getElementById('role-dialog-container').outerHTML = e;
-            });
-        }
-
-    </script>
-
 </section>
