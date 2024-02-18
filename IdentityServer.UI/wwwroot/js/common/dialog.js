@@ -14,6 +14,9 @@
 });
 
 function loadDialogContent(window, dialogContentId) {
+    if(window.getAttribute('data-no-dialog-load')) {
+        return;
+    }
     const url = window.getAttribute('data-dialogcontent-url');
     window.classList.add('active');
     fetch(

@@ -57,7 +57,18 @@ public class AdminController : Controller {
     }
     
     [Route("roles")]
-    public IActionResult RolesDashboard() {
-        return NotFound();
+    public async Task<IActionResult> RolesDashboard() {
+        var allRoles = await _userRepository.GetAllRoleModelsAsync();
+        return View(allRoles);
+    }
+
+    [HttpPost]
+    [Route("roles")]
+    public async Task<IActionResult> AddNewRole([FromForm]string roleName, [FromForm]string roleDescription) {
+        var res = await _userRepository.AddNewRoleAsync(roleName, roleDescription);
+        return res.Match<IActionResult>(
+            () => RedirectToAction(nameof(RolesDashboard)),
+            err => BadRequest()
+        );
     }
 }

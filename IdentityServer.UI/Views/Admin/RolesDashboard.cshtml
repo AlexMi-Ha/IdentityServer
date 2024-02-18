@@ -1,0 +1,52 @@
+﻿@model List<IdentityServer.Core.Dto.RoleModel>
+@section Styles {
+    <link rel="stylesheet" href="~/css/role.css" />
+}
+
+<div class="content-panel">
+    <h1 class="center">Rolemanagement</h1>
+    <button class="button button-fit-content dialog-button-open">Add new Role</button>
+    <section class="role-settings">
+        @foreach (var role in Model) {
+            <div class="role-container">
+                <span class="ti ti-dropdown-toggle"></span>
+                @* <div> *@
+                <p class="role-name">@role.RoleName</p>
+                @* <div class="role-info low-opacity"> *@
+                @*     <span>Granted<br></span> *@
+                @*     <span>Expires<br>/</span> *@
+                @* </div> *@
+                @* </div> *@
+                <div class="role-description">
+                    <p>@role.RoleDescription</p>
+                </div>
+            </div>
+        }
+    </section>
+    <div id="dialog-window" data-no-dialog-load>
+        <button id="dialog-button-close"><span class="ti ti-x"></span></button>
+        <div id="dialog-content-window">
+            <form asp-controller="Admin" asp-action="AddNewRole" method="post">
+                <div class="input-container input-dark input-2-col">
+                    <span class="ti ti-user"></span>
+                    <input placeholder="Role Name" name="roleName" required/>
+                </div>
+                <textarea placeholder="Role Description" class="input-container input-dark" name="roleDescription" required></textarea>
+                <button class="button round button-primary button-fit-content" type="submit">Add Role</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.role-container').forEach(ele => {
+        ele.addEventListener('click', () => {
+            if(ele.classList.contains('active')) {
+                ele.classList.remove('active');
+            }else {
+                ele.classList.add('active');
+            }
+        })
+    });
+</script>
+<script src="~/js/common/dialog.js"></script>

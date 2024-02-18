@@ -138,6 +138,14 @@ internal class UserRepository : IUserRepository {
         return _userManager.GetAllRolesAsync();
     }
 
+    public Task<List<RoleModel>> GetAllRoleModelsAsync() {
+        return _userManager.GetAllRolesModelsAsync();
+    }
+
+    public Task<Result> AddNewRoleAsync(string name, string description) {
+        return _userManager.AddNewRoleAsync(name, description);
+    }
+
     public async Task<Result> RemoveUserFromRoleAsync(string userId, string roleName) {
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null) {

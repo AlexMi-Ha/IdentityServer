@@ -19,7 +19,10 @@ public interface IUserRepository {
 
     Task<List<RoleModel>> GetUserRolesAsync(string userId);
     Task<List<string>> GetAllRolesAsync();
+    Task<List<RoleModel>> GetAllRoleModelsAsync();
 
+    Task<Result> AddNewRoleAsync(string name, string description);
+    
     Task<Result> RemoveUserFromRoleAsync(string userId, string roleName);
 
     Task<Result> AddUserToRoleAsync(string userId, string roleName);

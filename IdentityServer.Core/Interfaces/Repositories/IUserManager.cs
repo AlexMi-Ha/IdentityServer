@@ -31,5 +31,8 @@ public interface IUserManager<T> {
     Task<bool> IsInRoleAsync(T user, string role);
 
     Task<List<string>> GetAllRolesAsync();
+    Task<List<RoleModel>> GetAllRolesModelsAsync();
+    Task<Result> AddNewRoleAsync(string name, string description);
+    
     Task<Result> RemoveUserFromRoleAsync(T user, string roleName);
 }
