@@ -10,6 +10,8 @@ When your service asks for authentication, the user gets redirected to `/auth/lo
 > [!WARNING]
 > The services must run under the same domain as the identity server. The cookie gets set to the domain of the identity server by default. (e.g. `identity-server.example.com` sets an authentication cookie for `.example.com`)
 
+In order to verify the tokens signiture, configure the identity servers public key as the asymmetric signing public key in your service.
+
 ## Features
 
 #### User Login and Register forms
