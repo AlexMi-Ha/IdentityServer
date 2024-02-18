@@ -61,11 +61,10 @@ public static class DependencyInjection {
             );
         }
         else {
-            /*services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(configuration.GetConnectionString("DefaultConnection")!,
                     new MariaDbServerVersion(new Version(configuration["DatabaseConfig:Version"]!)))
-            ); TODO configure*/
-            throw new NotImplementedException();
+            );
         }
         return services;
     }

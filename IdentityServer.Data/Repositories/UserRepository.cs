@@ -18,14 +18,16 @@ internal class UserRepository : IUserRepository {
     private readonly TokenFactory _tokenFactory;
     private readonly IValidator<LoginModel> _loginValidator;
     private readonly IValidator<RegisterModel> _registerValidator;
+    private readonly IValidator<RoleModel> _roleModelValidator;
 
     public UserRepository(IUserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-        TokenFactory tokenFactory, IValidator<LoginModel> loginValidator, IValidator<RegisterModel> registerValidator) {
+        TokenFactory tokenFactory, IValidator<LoginModel> loginValidator, IValidator<RegisterModel> registerValidator, IValidator<RoleModel> roleModelValidator) {
         _userManager = userManager;
         _signInManager = signInManager;
         _tokenFactory = tokenFactory;
         _loginValidator = loginValidator;
         _registerValidator = registerValidator;
+        _roleModelValidator = roleModelValidator;
     }
 
 
@@ -142,8 +144,14 @@ internal class UserRepository : IUserRepository {
         return _userManager.GetAllRolesModelsAsync();
     }
 
-    public Task<Result> AddNewRoleAsync(string name, string description) {
-        return _userManager.AddNewRoleAsync(name, description);
+    public async Task<Result> AddNewRoleAsync(string name, string description) {
+        var roleModel = new RoleModel { RoleDescription = description, RoleName = name };
+        var validationRes = await _roleModelValidator.ValidateAsync(roleModel);
+        if (!validationRes.IsValid) {
+            return new UserOperationException("Failed adding the new role: Validation error!");
+        }
+        
+        return await _userManager.AddNewRoleAsync(name, description);
     }
 
     public async Task<Result> RemoveUserFromRoleAsync(string userId, string roleName) {
