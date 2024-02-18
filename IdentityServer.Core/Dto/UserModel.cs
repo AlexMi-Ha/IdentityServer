@@ -11,4 +11,5 @@ public class UserModel {
     public bool LockedOut { get; set; }
     
     public RoleModel[] Roles { get; set; }
+
 }

@@ -13,11 +13,13 @@ namespace IdentityServer.Data.Repositories;
 public class UserManager : IUserManager<ApplicationUser> {
 
     private readonly Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> _userManager;
+    private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly ApplicationDbContext _dbContext;
     
-    public UserManager(UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext) {
+    public UserManager(UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext, RoleManager<ApplicationRole> roleManager) {
         _userManager = userManager;
         _dbContext = dbContext;
+        _roleManager = roleManager;
     }
 
     public Task<List<ApplicationUser>> GetAllAsync() {
@@ -83,4 +85,25 @@ public class UserManager : IUserManager<ApplicationUser> {
     public Task<bool> IsInRoleAsync(ApplicationUser user, string role) {
         return _userManager.IsInRoleAsync(user, role);
     }
+
+    public Task<List<string>> GetAllRolesAsync() {
+        return _roleManager.Roles.Select(e => e.Name ?? "DEFAULT_ROLE").ToListAsync();
+    }
+
+    public Task<List<RoleModel>> GetAllRolesModelsAsync() {
+        return _roleManager.Roles.Select(e => new RoleModel {
+            RoleId = e.Id,
+            RoleName = e.Name!,
+            RoleDescription = e.RoleDescription
+        }).ToListAsync();
+    }
+
+    public async Task<Result> AddNewRoleAsync(string name, string description) {
+        var res = await _roleManager.CreateAsync(new ApplicationRole(name, description));
+        return res.Succeeded ? true : new UserOperationException("Failed creating the role");
+    }
+    
+    public async Task<Result> RemoveUserFromRoleAsync(ApplicationUser user, string roleName) {
+        return (await _userManager.RemoveFromRoleAsync(user, roleName)).Succeeded;
+    } 
 }

@@ -82,7 +82,10 @@ public static class DependencyInjection {
     }
     
     private static IServiceCollection AddIdentityServices(this IServiceCollection services) {
-        services.AddIdentity<ApplicationUser, ApplicationRole>()
+        services.AddIdentity<ApplicationUser, ApplicationRole>(opt => {
+                opt.User.RequireUniqueEmail = true;
+                opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789- ";
+            })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
         return services;

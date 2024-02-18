@@ -1,0 +1,108 @@
+﻿
+.content-panel {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    background-color: var(--background);
+    height: 100%;
+    max-width: 900px;
+    min-width: min(100%, 900px);
+    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.35);
+    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.35);
+    padding: 0 2em;
+}
+
+.center {
+    align-self: center;
+}
+
+.role-settings {
+    margin-top: 1em;
+}
+
+.role-container:hover {
+    background-color: var(--secondary);
+}
+.role-container {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    align-items: center;
+    padding-left: .2em;
+    padding-bottom: .5em;
+    cursor: pointer;
+}
+
+.role-name {
+    margin-bottom: 0;
+    color: var(--accent);
+    font-weight: bold;
+}
+
+.role-info {
+    display:flex;
+    flex-direction: row;
+    gap: 1.5em;
+}
+
+.role-description {
+    grid-column: 2;
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 500ms ease-in-out;
+}
+
+.role-container.active .role-description {
+    grid-template-rows: 1fr;
+}
+
+.role-description > p {
+    overflow: hidden;
+    transition-property: margin, padding;
+    transition-duration: 500ms;
+    transition-timing-function: ease-in-out;
+}
+
+.role-container:not(.active) .role-description p {
+    margin: 0;
+    padding: 0;
+}
+
+.role-description p {
+    padding-right: 1em;
+}
+
+
+#dialog-window {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50%;
+    height: 80%;
+    background-color: var(--secondary);
+    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.35);
+    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.35);
+    display: none;
+    align-self: center;
+}
+
+#dialog-window.active {
+    display:block;
+}
+
+#dialog-button-close {
+    background: none;
+    border:none;
+    outline:none;
+    font-size: var(--font-size--large-heading);
+    color: var(--text);
+    cursor: pointer;
+    float: right;
+}
+
+#dialog-button-close:hover {
+    color:var(--primary);
+}
+
+#dialog-content-window {
+    padding: 1em;
+}

@@ -125,6 +125,45 @@ internal class UserRepository : IUserRepository {
         return _userManager.AnyUsersAsync();
     }
 
+    public async Task<List<RoleModel>> GetUserRolesAsync(string userId) {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null) {
+            return Enumerable.Empty<RoleModel>().ToList();
+        }
+
+        return await _userManager.GetRolesAsync(user);
+    }
+
+    public Task<List<string>> GetAllRolesAsync() {
+        return _userManager.GetAllRolesAsync();
+    }
+
+    public Task<List<RoleModel>> GetAllRoleModelsAsync() {
+        return _userManager.GetAllRolesModelsAsync();
+    }
+
+    public Task<Result> AddNewRoleAsync(string name, string description) {
+        return _userManager.AddNewRoleAsync(name, description);
+    }
+
+    public async Task<Result> RemoveUserFromRoleAsync(string userId, string roleName) {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null) {
+            return new UserNotFoundException();
+        }
+
+        return await _userManager.RemoveUserFromRoleAsync(user, roleName);
+    }
+    
+    public async Task<Result> AddUserToRoleAsync(string userId, string roleName) {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null) {
+            return new UserNotFoundException();
+        }
+
+        return await _userManager.AddToRoleAsync(user, roleName);
+    }
+
     private ApplicationUser CreateBaseUserModel(string email, string? name) {
         return new ApplicationUser() {
             Email = email,
