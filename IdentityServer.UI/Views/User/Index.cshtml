@@ -17,7 +17,12 @@
             <p class="username">@Model.UserName</p>
             <p class="email low-opacity">@Model.Email</p>
         </div>
-        <a asp-controller="Auth" asp-action="Logout" class="button button-primary">Log out</a>
+        <div style="display:flex; flex-direction:column; width: 100%; gap: 1em">
+            @if (Model.Roles.Any(e => e.RoleName.Equals("IDENTITY_ADMIN"))) {
+                <a asp-controller="Admin" asp-action="Index" class="button">Admin</a>
+            }
+            <a asp-controller="Auth" asp-action="Logout" class="button button-primary">Log out</a>
+        </div>
     </div>
     <div class="settings-panel">
         <h1>Account</h1>

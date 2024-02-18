@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IdentityServer.UI.Controllers; 
 
 [Authorize]
+[Route("")]
 [Route("user")]
 public class UserController : ControllerBase {
 
