@@ -7,6 +7,6 @@ internal static class CookieConfigurationExtensions {
     }
     
     private static string GetCookie(this IConfiguration config, string val) {
-        return config[$"Cookie:{val}"]!;
+        return config[$"Cookie{val}"]!;
     }
 }
