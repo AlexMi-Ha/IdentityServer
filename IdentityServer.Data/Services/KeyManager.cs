@@ -22,8 +22,8 @@ internal static class KeyManager {
         }
 
         using var rsa = RSA.Create();
-        var privateKey = rsa.ToXmlString(true);
-        var publicKey = rsa.ToXmlString(false);
+        var privateKey = rsa.ExportRSAPrivateKeyPem();
+        var publicKey = rsa.ExportRSAPublicKeyPem();
 
         using var privateFile = File.Create(config.GetJwtPrivateKeyPath());
         using var publicFile = File.Create(config.GetJwtPublicKeyPath());

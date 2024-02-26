@@ -39,13 +39,13 @@ internal class JwtHandler : IJwtHandler {
 
     private void ConfigureRsa(string publicKeyPath, string privateKeyPath) {
         _publicRsa = RSA.Create();
-        var publicKeyXml = File.ReadAllText(publicKeyPath);
-        _publicRsa.FromXmlString(publicKeyXml);
+        var publicKeyPem = File.ReadAllText(publicKeyPath);
+        _publicRsa.ImportFromPem(publicKeyPem);
         _issuerSigningKey = new RsaSecurityKey(_publicRsa);
 
         _privateRsa = RSA.Create();
-        var privateKeyXml = File.ReadAllText(privateKeyPath);
-        _privateRsa.FromXmlString(privateKeyXml);
+        var privateKeyPem = File.ReadAllText(privateKeyPath);
+        _privateRsa.ImportFromPem(privateKeyPem);
         var privateKey = new RsaSecurityKey(_privateRsa);
         _signingCredentials = new SigningCredentials(privateKey, SecurityAlgorithms.RsaSha256);
     }
